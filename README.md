@@ -3,3 +3,4 @@ This repo houses a somewhat eclectic collection of Ruby scripts I've created at 
 
 ## Contents
 * categorize: A CSV parsing and formatting script I use for manipulating credit card statements to work with my reporting infrastructure
+* movie_formatter: A file-organization script I use for managing my personal digital movie collection
