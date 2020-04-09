@@ -1,5 +1,7 @@
 require_relative './lib/module_loader.rb'
 
+Expense::Configuration.check_for_duplicate_vendors
+
 expenses = []
 CSV.foreach("./expenses.csv") do |row|
   if row[2] == "DEBIT"

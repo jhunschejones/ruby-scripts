@@ -1,18 +1,20 @@
 class Expense
-  VENDOR_CATEGORIES = YAML.load(File.read("./vendors.yml"))["vendor_categories"]
+  module Configuration
+    VENDOR_CATEGORIES = YAML.load(File.read("./vendors.yml"))["vendor_categories"]
 
-  attr_accessor :transaction_date, :description, :amount, :category
+    def self.check_for_duplicate_vendors
+      vendors = VENDOR_CATEGORIES.flat_map { |vendor_category| vendor_category["vendors"] }
+      duplicate_vendors = vendors.select { |vendor| vendors.count(vendor) > 1 }.uniq
 
-  def initialize(transaction_date:, description:, amount:, category:)
-    @transaction_date = transaction_date
-    @description = description
-    @amount = amount
-    @category = category
+      if duplicate_vendors.size > 0
+        raise "Duplicate vendors found: '#{duplicate_vendors.join("', '")}'"
+      end
+    end
   end
 
   def self.category_for_description(description)
     matching_category = "Unknown"
-    VENDOR_CATEGORIES.each do |vendor_category|
+    Configuration::VENDOR_CATEGORIES.each do |vendor_category|
       value = vendor_category["vendors"].each do |vendor|
         if description.upcase.include?(vendor.upcase)
           matching_category = vendor_category["name"]
@@ -21,5 +23,14 @@ class Expense
       end
     end
     matching_category
+  end
+
+  attr_accessor :transaction_date, :description, :amount, :category
+
+  def initialize(transaction_date:, description:, amount:, category:)
+    @transaction_date = transaction_date
+    @description = description
+    @amount = amount
+    @category = category
   end
 end
