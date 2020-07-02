@@ -16,7 +16,7 @@ class Expense
     matching_category = "Unknown"
     Configuration::VENDOR_CATEGORIES.each do |vendor_category|
       value = vendor_category["vendors"].each do |vendor|
-        if description.upcase.include?(vendor.upcase)
+        if vendor.upcase.split(",").map { |v| description.upcase.include?(v.strip) }.any?
           matching_category = vendor_category["name"]
           break
         end
@@ -25,12 +25,26 @@ class Expense
     matching_category
   end
 
-  attr_accessor :transaction_date, :description, :amount, :category
+  def self.vendor_for_description(description)
+    matching_vendor = "Unknown"
+    Configuration::VENDOR_CATEGORIES.each do |vendor_category|
+      value = vendor_category["vendors"].each do |vendor|
+        if vendor.upcase.split(",").map { |v| description.upcase.include?(v.strip) }.any?
+          matching_vendor = vendor
+          break
+        end
+      end
+    end
+    matching_vendor
+  end
 
-  def initialize(transaction_date:, description:, amount:, category:)
+  attr_reader :transaction_date, :description, :amount, :category, :vendor
+
+  def initialize(transaction_date:, description:, amount:, category:, vendor:)
     @transaction_date = transaction_date
     @description = description
     @amount = amount
     @category = category
+    @vendor = vendor
   end
 end
