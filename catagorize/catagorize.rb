@@ -42,7 +42,7 @@ CSV.open("./expenses_by_vendors.csv", "wb") do |csv|
   expenses.group_by(&:vendor).each do |vendor, expenses|
     csv << [
       vendor,
-      expenses.map { |expense| expense.amount.to_i }.reduce(0, :+).abs
+      expenses.map { |expense| expense.amount.to_f }.reduce(0, :+).abs
     ]
   end
 end
