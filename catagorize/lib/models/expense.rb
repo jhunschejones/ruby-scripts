@@ -17,8 +17,12 @@ class Expense
     Configuration::VENDOR_CATEGORIES.each do |vendor_category|
       value = vendor_category["vendors"].each do |vendor|
         if vendor.upcase.split(",").map { |v| description.upcase.include?(v.strip) }.any?
-          matching_category = vendor_category["name"]
-          break
+          # Unknown catagory used for vendor_by_catagory report, be careful
+          # not to set this though unless no other catagories match
+          unless vendor_category["name"] == "Unknown"
+            matching_category = vendor_category["name"]
+            break
+          end
         end
       end
     end
