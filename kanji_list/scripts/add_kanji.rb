@@ -14,8 +14,4 @@ end
 #   end
 # end
 
-begin
-  p Kanji.create!(character: ARGV[0].strip, status: Kanji::CARD_CREATED_STATUS)
-rescue ActiveRecord::RecordInvalid => e
-  p e.message
-end
+p Kanji.add(ARGV[0].strip)
