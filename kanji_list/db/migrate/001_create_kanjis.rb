@@ -1,7 +1,8 @@
 class CreateKanjis < ActiveRecord::Migration[6.0]
   def change
     create_table :kanjis do |t|
-      t.string :character
+      t.string :character, null: false
+      t.string :status
       t.timestamps
     end
 

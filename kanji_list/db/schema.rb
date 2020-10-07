@@ -13,7 +13,8 @@
 ActiveRecord::Schema.define(version: 1) do
 
   create_table "kanjis", force: :cascade do |t|
-    t.string "character"
+    t.string "character", null: false
+    t.string "status"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["character"], name: "index_kanjis_on_character", unique: true
