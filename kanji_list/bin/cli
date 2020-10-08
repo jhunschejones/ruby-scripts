@@ -5,7 +5,7 @@ def menu
   system("clear")
   puts "\033[36m==== Welcome to Kanji List! ====\033[0m"
   puts "Options: \033[37m(ENTER to advance)\033[0m"
-  puts "1. Show next kanji"
+  puts "1. Show next kanji (#{Kanji.remaining_characters.size} remaining)"
   puts "2. Add kanji"
   puts "3. Skip kanji"
   puts "4. Remove kanji from database"

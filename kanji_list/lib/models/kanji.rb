@@ -5,12 +5,6 @@ class Kanji < ActiveRecord::Base
   validates :character, presence: true, uniqueness: true
 
   class << self
-    def next
-      previous_kanji = Kanji.pluck(:character)
-      new_words = YAML::load(File.open('config/word_list.yml'))["new_words"]
-      (new_words.flat_map {|word| word.split("") }.uniq - previous_kanji).first
-    end
-
     def add(new_kanji)
       begin
         Kanji.create!(character: new_kanji.strip, status: Kanji::CARD_CREATED_STATUS)
@@ -31,8 +25,18 @@ class Kanji < ActiveRecord::Base
       kanji_to_destroy = Kanji.find_by(character: kanji.strip)
       return "Unable to find kanji character: #{kanji}" unless kanji_to_destroy
       destroyed_kanji = kanji_to_destroy.destroy
-      $logger.debug(destroyed_kanji.inspect) if $logger
+      $logger.debug("Destroyed: #{destroyed_kanji.inspect}") if $logger
       destroyed_kanji
+    end
+
+    def next
+      remaining_characters.first
+    end
+
+    def remaining_characters
+      previous_kanji = Kanji.pluck(:character)
+      new_words = YAML::load(File.open('config/word_list.yml'))["new_words"]
+      new_words.flat_map {|word| word.split("") }.uniq - previous_kanji
     end
 
     def dump_to_yaml
