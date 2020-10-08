@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+require_relative '../lib/module_loader'
+
+def menu
+  system("clear")
+  puts "\033[36m==== Welcome to Kanji List! ====\033[0m"
+  puts "Options: \033[37m(ENTER to advance)\033[0m"
+  puts "1. Show next kanji"
+  puts "2. Add kanji"
+  puts "3. Skip kanji"
+  puts "4. Remove kanji from database"
+  puts ""
+end
+
+def parse_user_input
+  user_input = $stdin.gets.chomp.downcase
+  return $quit = true if ["exit", "quit", "q"].include?(user_input)
+  menu()
+
+  case user_input
+  when "1"
+    puts Kanji.next ? "Next kanji:\n#{Kanji.next}" : "No more new kanjis in the word list"
+  when "2"
+    puts "Kanji to add:"
+    print "> "
+    p Kanji.add($stdin.gets.strip)
+  when "3"
+    puts "Kanji to skip:"
+    print "> "
+    p Kanji.skip($stdin.gets.strip)
+  when "4"
+    puts "Kanji to remove:"
+    print "> "
+    p Kanji.remove($stdin.gets.strip)
+  else
+    return
+  end
+
+  $stdin.gets
+end
+
+$quit = false
+
+until $quit
+  menu()
+  print "> "
+  parse_user_input()
+end

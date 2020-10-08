@@ -30,11 +30,13 @@ class Kanji < ActiveRecord::Base
     def remove(kanji)
       kanji_to_destroy = Kanji.find_by(character: kanji.strip)
       return "Unable to find kanji character: #{kanji}" unless kanji_to_destroy
-      kanji_to_destroy.destroy
+      destroyed_kanji = kanji_to_destroy.destroy
+      $logger.debug(destroyed_kanji.inspect) if $logger
+      destroyed_kanji
     end
 
-    def yaml_dump
-      File.open("kanji_list_dump.yml", "w") do |file|
+    def dump_to_yaml
+      File.open("db/kanji_list_dump.yml", "w") do |file|
         file.write(
           {
             "added_kanji" => Kanji.where(status: CARD_CREATED_STATUS).pluck(:character),
@@ -44,16 +46,11 @@ class Kanji < ActiveRecord::Base
       end
     end
 
-    def load_from_yml_dump
+    def load_from_yaml_dump
+      dump = YAML::load(File.open("db/kanji_list_dump.yml"))
       Kanji.destroy_all
-      dump = YAML::load(File.open("kanji_list_dump.yml"))
-      dump["added_kanji"].each do |kanji|
-        p Kanji.add(kanji)
-      end
-
-      dump["skipped_kanji"].each do |kanji|
-        p Kanji.skip(kanji)
-      end
+      dump["added_kanji"].each { |kanji| p Kanji.add(kanji) }
+      dump["skipped_kanji"].each { |kanji| p Kanji.skip(kanji) }
     end
   end
 end

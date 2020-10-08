@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+require_relative '../lib/module_loader'
+
+raise "Pass a kanji as an argument to add it to the database" unless ARGV[0]
+p Kanji.add(ARGV[0].strip)
