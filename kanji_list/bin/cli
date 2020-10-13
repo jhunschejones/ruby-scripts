@@ -3,12 +3,13 @@ require_relative '../lib/module_loader'
 
 def menu
   system("clear")
-  puts "\033[36m==== Welcome to Kanji List! ====\033[0m"
-  puts "Options: \033[37m(ENTER to advance)\033[0m"
-  puts "1. Show next kanji (#{Kanji.remaining_characters.size} remaining)"
-  puts "2. Add kanji"
-  puts "3. Skip kanji"
-  puts "4. Remove kanji from database"
+  puts "\033[36m=======  Welcome to Kanji List!  =======\033[0m"
+  puts "\e[37mSelect an option, press ENTER to advance\033[0m"
+  puts ""
+  puts "1. Show next \e[37m(#{Kanji.remaining_characters.size} remaining)\033[0m"
+  puts "2. Add"
+  puts "3. Skip"
+  puts "4. Remove"
   puts ""
 end
 
@@ -32,6 +33,8 @@ def parse_user_input
     puts "Kanji to remove:"
     print "> "
     p Kanji.remove($stdin.gets.strip)
+  when "total"
+    puts "\e[33mTotal kanji added: #{Kanji.count}\033[0m"
   else
     return
   end
