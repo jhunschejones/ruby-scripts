@@ -3,13 +3,13 @@ require 'sinatra/activerecord/rake'
 require_relative 'lib/module_loader'
 
 namespace :db do
-  desc "Dump database to yaml file"
+  desc "Dump the database to a yaml file"
   task :dump_to_yaml do
     puts "\033[33mDumping database to ./db/kanji_list_dump.yml\033[0m"
     Kanji.dump_to_yaml
   end
 
-  desc "Load database from backup yaml file"
+  desc "Reset the database from a yaml file"
   task :load_from_yaml do
     puts "\033[33mLoading database from ./db/kanji_list_dump.yml\033[0m"
     Kanji.load_from_yaml_dump
