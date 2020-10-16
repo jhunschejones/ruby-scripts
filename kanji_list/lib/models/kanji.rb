@@ -7,7 +7,7 @@ class Kanji < ActiveRecord::Base
   class << self
     def add(new_kanji)
       begin
-        Kanji.create!(character: new_kanji.strip, status: Kanji::CARD_CREATED_STATUS)
+        Kanji.create!(character: new_kanji.strip, status: CARD_CREATED_STATUS)
       rescue ActiveRecord::RecordInvalid => e
         e.message
       end
@@ -15,7 +15,7 @@ class Kanji < ActiveRecord::Base
 
     def skip(new_kanji)
       begin
-        Kanji.create!(character: new_kanji.strip, status: Kanji::SKIPPED_STATUS)
+        Kanji.create!(character: new_kanji.strip, status: SKIPPED_STATUS)
       rescue ActiveRecord::RecordInvalid => e
         e.message
       end
