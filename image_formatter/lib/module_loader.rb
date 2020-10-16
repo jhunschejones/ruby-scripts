@@ -4,8 +4,11 @@ require 'fileutils'
 require 'filewatcher'
 require 'tinify'
 require 'image_size'
-
-Dir["#{File.dirname(__FILE__)}/*.rb"].each { |f| require(f) }
-Dir["#{File.dirname(__FILE__)}/**/*.rb"].each { |f| require(f) }
+require_relative './image_formatter/image_formatter'
 
 $logger = Logger.new('tmp/log.txt')
+
+def log(message)
+  $logger.debug(message)
+  puts message
+end

@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+require_relative '../lib/module_loader'
+
+Tinify.key = ENV["TINIFY_API_KEY"]
+Tinify.validate!
+puts "#{Tinify.compression_count} compressions this month"
