@@ -1,4 +1,4 @@
 #!/bin/bash
 
 echo "Starting console..."
-irb -r ./lib/module_loader.rb
+LOG_QUERIES=true irb -r ./lib/module_loader.rb
