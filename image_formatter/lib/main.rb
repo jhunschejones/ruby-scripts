@@ -12,11 +12,11 @@ Tinify.validate!
 log("#{Tinify.compression_count} compressions this month")
 
 # == Run file watcher loop ==
-Filewatcher.new(WATCH_PATH, exclude: BACKUP_FILES_PATH).watch do |watcher_event|
+Filewatcher.new(WATCH_PATH, exclude: BACKUP_FILES_PATH, interval: 0).watch do |watcher_event|
   filename, event = watcher_event.to_a.first
   image_formatter = ImageFormatter.new(filename, event)
   if image_formatter.should_process_event?
-    image_formatter.process_event
+    Thread.new { image_formatter.process_event }
   else
     puts "Skipping #{event} event for #{filename}"
   end
