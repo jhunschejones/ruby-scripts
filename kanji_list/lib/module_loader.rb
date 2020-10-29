@@ -1,5 +1,6 @@
 require 'yaml'
 require 'logger'
+require 'tty-prompt'
 require 'active_record'
 require_relative '../db/connection'
 

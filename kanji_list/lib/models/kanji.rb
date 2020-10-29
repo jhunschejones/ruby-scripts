@@ -1,5 +1,5 @@
 class Kanji < ActiveRecord::Base
-  CARD_CREATED_STATUS = "card_created".freeze
+  ADDED_STATUS = "added".freeze
   SKIPPED_STATUS = "skipped".freeze
 
   validates :character, presence: true, uniqueness: true
@@ -7,7 +7,7 @@ class Kanji < ActiveRecord::Base
   class << self
     def add(new_kanji)
       begin
-        Kanji.create!(character: new_kanji.strip, status: CARD_CREATED_STATUS)
+        Kanji.create!(character: new_kanji&.strip, status: ADDED_STATUS)
       rescue ActiveRecord::RecordInvalid => e
         e.message
       end
@@ -15,22 +15,23 @@ class Kanji < ActiveRecord::Base
 
     def skip(new_kanji)
       begin
-        Kanji.create!(character: new_kanji.strip, status: SKIPPED_STATUS)
+        Kanji.create!(character: new_kanji&.strip, status: SKIPPED_STATUS)
       rescue ActiveRecord::RecordInvalid => e
         e.message
       end
     end
 
     def remove(kanji)
-      kanji_to_destroy = Kanji.find_by(character: kanji.strip)
-      return "Unable to find kanji character: #{kanji}" unless kanji_to_destroy
-      destroyed_kanji = kanji_to_destroy.destroy
-      $logger.debug("Destroyed: #{destroyed_kanji.inspect}") if $logger
-      destroyed_kanji
+      kanji_to_destroy = Kanji.find_by(character: kanji&.strip)
+      return false unless kanji_to_destroy
+      removed_kanji = kanji_to_destroy.destroy
+      $logger.debug("Removed: #{removed_kanji.inspect}") if $logger
+      removed_kanji
     end
 
     def next
-      remaining_characters.first
+      next_caracter = remaining_characters.first&.strip
+      next_caracter ? new(character: next_caracter) : nil
     end
 
     def remaining_characters
@@ -43,7 +44,7 @@ class Kanji < ActiveRecord::Base
       File.open("db/kanji_list_dump.yml", "w") do |file|
         file.write(
           {
-            "added_kanji" => Kanji.where(status: CARD_CREATED_STATUS).pluck(:character),
+            "added_kanji" => Kanji.where(status: ADDED_STATUS).pluck(:character),
             "skipped_kanji" => Kanji.where(status: SKIPPED_STATUS).pluck(:character)
           }.to_yaml
         )
@@ -55,6 +56,24 @@ class Kanji < ActiveRecord::Base
       Kanji.destroy_all
       dump["added_kanji"].each { |kanji| p Kanji.add(kanji) }
       dump["skipped_kanji"].each { |kanji| p Kanji.skip(kanji) }
+    end
+  end
+
+  def add!
+    begin
+      self.status = ADDED_STATUS
+      self.save!
+    rescue ActiveRecord::RecordInvalid => e
+      e.message
+    end
+  end
+
+  def skip!
+    begin
+      self.status = SKIPPED_STATUS
+      self.save!
+    rescue ActiveRecord::RecordInvalid => e
+      e.message
     end
   end
 end

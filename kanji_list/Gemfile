@@ -4,3 +4,4 @@ gem 'activerecord', '~> 6.0', '>= 6.0.3.4'
 gem 'sinatra-activerecord' # For adding custom rake db:* commands easily
 gem 'sqlite3', '~> 1.4'
 gem 'rake'
+gem 'tty-prompt', '~> 0.22'
