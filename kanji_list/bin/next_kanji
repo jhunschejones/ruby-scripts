@@ -1,8 +1,0 @@
-#!/usr/bin/env ruby
-require_relative '../lib/module_loader'
-
-next_kanji = Kanji.next
-return puts "No more new kanji in the word list" unless next_kanji
-
-puts "Next kanji:"
-puts next_kanji
