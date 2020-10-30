@@ -4,9 +4,11 @@ WATCH_DIRECTORY = File.expand_path("~/Downloads/Card\ Images").freeze
 WATCH_PATH = "#{WATCH_DIRECTORY}/*".freeze
 BACKUP_FILES_PATH = File.expand_path("~/Downloads/Card\ Images/_Pre\ Tinyification\ Images").freeze
 
-# == Validate required state on startup ==
-puts "\033[36mImage Formatter is running for '#{WATCH_PATH}'\033[0m"
-raise "Can't find required paths" unless Dir.exist?(WATCH_DIRECTORY) && Dir.exist?(BACKUP_FILES_PATH)
+# == Locate or create required state on startup ==
+puts "Image Formatter is running for '#{WATCH_PATH}'".cyan
+FileUtils.mkdir_p(BACKUP_FILES_PATH) unless Dir.exist?(BACKUP_FILES_PATH)
+
+# == Make sure Tinyfy config is working on startup ==
 Tinify.key = ENV["TINIFY_API_KEY"]
 Tinify.validate!
 log("#{Tinify.compression_count} compressions this month")
