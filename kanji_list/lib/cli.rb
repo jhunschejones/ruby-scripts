@@ -42,6 +42,8 @@ class CLI
 
   def next_kanji_menu
     next_kanji = Kanji.next
+    # copy the character to the clipboard
+    system("echo #{next_kanji.character} | pbcopy")
     case @prompt.select("Next kanji: #{next_kanji.character.cyan}", NEXT_KANJI_OPTIONS)
     when "Add"
       next_kanji.add!
