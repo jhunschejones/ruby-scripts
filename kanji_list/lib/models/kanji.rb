@@ -1,6 +1,7 @@
 class Kanji < ActiveRecord::Base
   ADDED_STATUS = "added".freeze
   SKIPPED_STATUS = "skipped".freeze
+  NON_KANA_OR_NUMBER_REGEX = /([^ぁ-んァ-ン０-９])/.freeze
 
   validates :character, presence: true, uniqueness: true
 
@@ -35,9 +36,13 @@ class Kanji < ActiveRecord::Base
     end
 
     def remaining_characters
-      previous_kanji = Kanji.pluck(:character)
-      new_words = YAML::load(File.open('config/word_list.yml'))["new_words"]
-      new_words.flat_map {|word| word.split("") }.uniq - previous_kanji
+      previous_characters = Kanji.pluck(:character)
+      new_characters = YAML::load(File.open('config/word_list.yml'))["new_words"]
+        .flat_map { |word| word.split("") }
+        .uniq
+        .select { |kanji| kanji =~ NON_KANA_OR_NUMBER_REGEX }
+        
+      new_characters - previous_characters
     end
 
     def dump_to_yaml
