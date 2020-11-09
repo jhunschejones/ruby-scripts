@@ -1,15 +1,15 @@
 class CLI
   MENU_OPTIONS = [
-    SHOW_NEXT_OPTION = "Next from word list",
+    SHOW_NEXT_OPTION = "Next new character from word list",
     ADVANCED_OPTION = "Advanced options",
     QUIT_OPTION = "Quit"
   ].freeze
   NEXT_KANJI_OPTIONS = ["Add", "Skip", "Back"].freeze
   ADVANCED_OPTIONS = [
+    TOTALS_OPTION = "Totals",
     ADD_OPTION = "Add (freeform)",
     SKIP_OPTION = "Skip (freeform)",
     REMOVE_OPTION = "Remove (freeform)",
-    TOTALS_OPTION = "Totals",
     BACK_OPTION = "Back".freeze
   ].freeze
 
@@ -19,9 +19,9 @@ class CLI
 
   def run
     loop do
-      case @prompt.select("What would you like to do? #{kanji_remaining_message}", menu_options)
+      case @prompt.select("What would you like to do? #{new_characters_remaining_message}", menu_options)
       when SHOW_NEXT_OPTION
-        next_kanji_menu
+        next_new_character_menu
       when ADVANCED_OPTION
         advanced_menu
       when QUIT_OPTION
@@ -36,14 +36,14 @@ class CLI
     Kanji.next ? MENU_OPTIONS : MENU_OPTIONS[1..-1]
   end
 
-  def kanji_remaining_message
+  def new_characters_remaining_message
     "(#{Kanji.remaining_characters.size} kanji remaining)".cyan
   end
 
-  def next_kanji_menu
+  def next_new_character_menu
     next_kanji = Kanji.next
-    # copy the character to the clipboard
-    system("echo #{next_kanji.character} | pbcopy")
+    # copy the next character to the clipboard (without newline)
+    system("echo #{next_kanji.character} | tr -d '\n' | pbcopy")
     case @prompt.select("Next kanji: #{next_kanji.character.cyan}", NEXT_KANJI_OPTIONS)
     when "Add"
       next_kanji.add!
@@ -54,6 +54,8 @@ class CLI
 
   def advanced_menu
     case @prompt.select("Advanced options:", ADVANCED_OPTIONS)
+    when TOTALS_OPTION
+      puts "Total kanji added: #{Kanji.where(status: Kanji::ADDED_STATUS).count}".cyan
     when ADD_OPTION
       kanji_to_add = @prompt.ask("What kanji would you like to add?")
       puts "Kanji added: #{Kanji.add(kanji_to_add).character}".green
@@ -68,8 +70,6 @@ class CLI
       else
         puts "Unable to find kanji character: #{kanji_to_remove.inspect}".red
       end
-    when TOTALS_OPTION
-      puts "Total kanji added: #{Kanji.where(status: Kanji::ADDED_STATUS).count}".cyan
     end
   end
 end
