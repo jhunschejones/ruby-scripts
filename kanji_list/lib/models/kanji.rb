@@ -1,9 +1,9 @@
 class Kanji < ActiveRecord::Base
   ADDED_STATUS = "added".freeze
   SKIPPED_STATUS = "skipped".freeze
-  NON_KANA_OR_NUMBER_REGEX = /([^ぁ-んァ-ン０-９])/.freeze
+  KANJI_REGEX = /[一-龯]/.freeze
 
-  validates :character, presence: true, uniqueness: true
+  validates :character, presence: true, uniqueness: true, format: { with: KANJI_REGEX }
 
   class << self
     def add(new_kanji)
@@ -40,7 +40,7 @@ class Kanji < ActiveRecord::Base
       new_characters = YAML::load(File.open('config/word_list.yml'))["new_words"]
         .flat_map { |word| word.split("") }
         .uniq
-        .select { |kanji| kanji =~ NON_KANA_OR_NUMBER_REGEX }
+        .select { |kanji| kanji =~ KANJI_REGEX }
         
       new_characters - previous_characters
     end
