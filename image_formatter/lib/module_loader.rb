@@ -3,7 +3,7 @@ require 'logger'
 require 'fileutils'
 require 'filewatcher'
 require 'tinify'
-require 'image_size'
+require 'mini_magick'
 
 Dir["#{File.dirname(__FILE__)}/**/*.rb"].each do |file|
   require(file) unless File.basename(file) == 'main.rb'

@@ -1,9 +1,11 @@
 class ImageFormatter
   TARGET_HEIGHT_PX = 480
   TARGET_FILESIZE_KB = 50
-  PROCESSED_IMAGE_SUFFIX = "_tinyified".freeze
+  TINYIFIED_IMAGE_SUFFIX = "_tinyified".freeze
   TEMP_FILE_EXTENSION = ".tinyifying".freeze
   SUPPORTED_EXTENSIONS = [".jpeg", ".jpg", ".png"].freeze
+  MINI_MAGICK_TEMP_SUFFIX = "~".freeze
+  RESIZED_SUFFIX = "_resized".freeze
 
   attr_reader :filename, :event
 
@@ -13,48 +15,58 @@ class ImageFormatter
   end
 
   def process_event
-    image_file = File.open(filename, "rb")
-    filesize_kb = (image_file.size.to_f / 1000).to_i
-    height_px = ImageSize.new(image_file).height
+    if mini_magick_image.height > TARGET_HEIGHT_PX
+      log("====== Resizing #{filename} ======".yellow)    
+      backup_origional_file
+      resize_image
+      return true
+    end
 
-    if filesize_kb > TARGET_FILESIZE_KB || height_px > TARGET_HEIGHT_PX
-      log("====== Tinyifying #{filename} ======".yellow)
-
+    if image_filesize_kb > TARGET_FILESIZE_KB
       begin
+        log("====== Tinyifying #{filename} ======".yellow)
         create_temp_file
-
-        Tinify
-          .from_file(filename)
-          .resize(method: "scale", height: TARGET_HEIGHT_PX)
-          .to_file(output_file_name)
-
-        log("====== Generated #{output_file_name} ======".green)
-        put_file_in_backup_directory
+        tinyify_image
+        log("====== Generated #{tinyified_file_name} ======".green)
+        backup_origional_file
       rescue => e
         log("Unable to tinyify #{filename}: #{e.message}".red)
       end
 
       clean_up_temp_file
-    else
-      puts "Skipping #{event} event for #{filename}: filesize is already small enough"
+      return true
     end
+
+    puts "Skipping #{event} event for #{filename}: filesize is already small enough"
   end
 
   def should_process_event?
     event == :created &&
-      !filename.include?(PROCESSED_IMAGE_SUFFIX) &&
+      !filename.include?(TINYIFIED_IMAGE_SUFFIX) &&
       !filename.include?(TEMP_FILE_EXTENSION) &&
-      SUPPORTED_EXTENSIONS.include?(File.extname(filename))
+      filename[-1] != MINI_MAGICK_TEMP_SUFFIX &&
+      SUPPORTED_EXTENSIONS.include?(File.extname(filename)) 
   end
 
   private
 
-  def output_file_name
-    directory_path = File.dirname(filename)
-    base_filename = File.basename(filename, File.extname(filename))
-    extension = File.extname(filename)
+  def mini_magick_image
+    @mini_magick_image ||= MiniMagick::Image.open(filename)
+  end
 
-    "#{directory_path}/#{base_filename}#{PROCESSED_IMAGE_SUFFIX}#{extension}"
+  def resize_image
+    # This image magic gemoetry syntax instructs the library to resize the image
+    # if the height is greater than our max height, then save it to the same 
+    # file name.
+    mini_magick_image.geometry("x#{TARGET_HEIGHT_PX}>").write(resized_file_name)
+  end
+
+  def tinyify_image
+    Tinify.from_file(filename).to_file(tinyified_file_name)
+  end
+
+  def image_filesize_kb
+    (mini_magick_image.size.to_f / 1000).to_i
   end
 
   def temp_file_name
@@ -62,6 +74,22 @@ class ImageFormatter
     base_filename = File.basename(filename, File.extname(filename))
 
     "#{directory_path}/#{base_filename}#{TEMP_FILE_EXTENSION}"
+  end
+
+  def resized_file_name
+    directory_path = File.dirname(filename)
+    base_filename = File.basename(filename, File.extname(filename))
+    extension = File.extname(filename)
+
+    "#{directory_path}/#{base_filename}#{RESIZED_SUFFIX}#{extension}"
+  end
+
+  def tinyified_file_name
+    directory_path = File.dirname(filename)
+    base_filename = File.basename(filename, File.extname(filename))
+    extension = File.extname(filename)
+
+    "#{directory_path}/#{base_filename}#{TINYIFIED_IMAGE_SUFFIX}#{extension}"
   end
 
   def create_temp_file
@@ -72,7 +100,13 @@ class ImageFormatter
     FileUtils.rm(temp_file_name)
   end
 
-  def put_file_in_backup_directory
-    FileUtils.mv(filename, BACKUP_FILES_PATH)
+  def backup_origional_file
+    if filename.include?(RESIZED_SUFFIX)
+      # If the image has already been resized it is not an origional which
+      # means we do not need to worry about backing it up.
+      File.delete(filename)
+    else 
+      FileUtils.mv(filename, BACKUP_FILES_PATH)
+    end
   end
 end
