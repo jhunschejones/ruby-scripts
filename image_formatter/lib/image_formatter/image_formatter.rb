@@ -1,95 +1,63 @@
 class ImageFormatter
+  include FileName
+
   TARGET_HEIGHT_PX = 480
   TARGET_FILESIZE_KB = 50
-  TINYIFIED_IMAGE_SUFFIX = "_tinyified".freeze
-  TEMP_FILE_EXTENSION = ".tinyifying".freeze
   SUPPORTED_EXTENSIONS = [".jpeg", ".jpg", ".png"].freeze
-  MINI_MAGICK_TEMP_SUFFIX = "~".freeze
-  RESIZED_SUFFIX = "_resized".freeze
 
-  attr_reader :filename, :event
+  attr_reader :event, :image
 
   def initialize(filename, event)
-    @filename = filename
     @event = event
+    @image = Image.new(filename)
   end
 
   def process_event
-    if mini_magick_image.height > TARGET_HEIGHT_PX
-      log("====== Resizing #{filename} ======".yellow)    
-      backup_origional_file
+    if image.height > TARGET_HEIGHT_PX
+      log("====== Resizing #{image.filename} ======".yellow)
+      backup_origional_image
       resize_image
       return true
     end
 
-    if image_filesize_kb > TARGET_FILESIZE_KB
+    if image.filesize_kb > TARGET_FILESIZE_KB
       begin
-        log("====== Tinyifying #{filename} ======".yellow)
+        log("====== Tinyifying #{image.filename} ======".yellow)
         create_temp_file
         tinyify_image
         log("====== Generated #{tinyified_file_name} ======".green)
-        backup_origional_file
+        backup_origional_image
       rescue => e
-        log("Unable to tinyify #{filename}: #{e.message}".red)
+        log("Unable to tinyify #{image.filename}: #{e.message}".red)
       end
 
       clean_up_temp_file
       return true
     end
 
-    puts "Skipping #{event} event for #{filename}: filesize is already small enough"
+    puts "Skipping #{event} event for #{image.filename}: filesize is already small enough"
   end
 
   def should_process_event?
     event == :created &&
-      !filename.include?(TINYIFIED_IMAGE_SUFFIX) &&
-      !filename.include?(TEMP_FILE_EXTENSION) &&
-      filename[-1] != MINI_MAGICK_TEMP_SUFFIX &&
-      SUPPORTED_EXTENSIONS.include?(File.extname(filename)) 
+      !image.filename.include?(TINYIFIED_IMAGE_SUFFIX) &&
+      !image.filename.include?(TEMP_FILE_EXTENSION) &&
+      image.filename[-1] != MINI_MAGICK_TEMP_SUFFIX &&
+      SUPPORTED_EXTENSIONS.include?(extension)
   end
 
   private
 
-  def mini_magick_image
-    @mini_magick_image ||= MiniMagick::Image.open(filename)
-  end
-
   def resize_image
     # This image magic gemoetry syntax instructs the library to resize the image
-    # if the height is greater than our max height, then save it to the same 
+    # if the height is greater than our max height, then save it to the same
     # file name.
-    mini_magick_image.geometry("x#{TARGET_HEIGHT_PX}>").write(resized_file_name)
+    image.mini_magick.geometry("x#{TARGET_HEIGHT_PX}>").write(resized_file_name)
   end
 
   def tinyify_image
-    Tinify.from_file(filename).to_file(tinyified_file_name)
-  end
-
-  def image_filesize_kb
-    (mini_magick_image.size.to_f / 1000).to_i
-  end
-
-  def temp_file_name
-    directory_path = File.dirname(filename)
-    base_filename = File.basename(filename, File.extname(filename))
-
-    "#{directory_path}/#{base_filename}#{TEMP_FILE_EXTENSION}"
-  end
-
-  def resized_file_name
-    directory_path = File.dirname(filename)
-    base_filename = File.basename(filename, File.extname(filename))
-    extension = File.extname(filename)
-
-    "#{directory_path}/#{base_filename}#{RESIZED_SUFFIX}#{extension}"
-  end
-
-  def tinyified_file_name
-    directory_path = File.dirname(filename)
-    base_filename = File.basename(filename, File.extname(filename))
-    extension = File.extname(filename)
-
-    "#{directory_path}/#{base_filename}#{TINYIFIED_IMAGE_SUFFIX}#{extension}"
+    return puts "... Bleep bloop blap ...".magenta if ENV["DRY_RUN"]
+    Tinify.from_file(image.filename).to_file(tinyified_file_name)
   end
 
   def create_temp_file
@@ -100,13 +68,21 @@ class ImageFormatter
     FileUtils.rm(temp_file_name)
   end
 
-  def backup_origional_file
-    if filename.include?(RESIZED_SUFFIX)
+  def backup_origional_image
+    if image_already_resized? || backup_image_already_exists?
       # If the image has already been resized it is not an origional which
       # means we do not need to worry about backing it up.
-      File.delete(filename)
-    else 
-      FileUtils.mv(filename, BACKUP_FILES_PATH)
+      File.delete(image.filename)
+    else
+      FileUtils.mv(image.filename, BACKUP_FILES_PATH)
     end
+  end
+
+  def image_already_resized?
+    image.filename.include?(RESIZED_SUFFIX)
+  end
+
+  def backup_image_already_exists?
+    File.exist?(backup_file_name)
   end
 end
