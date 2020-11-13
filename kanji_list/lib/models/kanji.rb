@@ -41,7 +41,7 @@ class Kanji < ActiveRecord::Base
         .flat_map { |word| word.split("") }
         .uniq
         .select { |kanji| kanji =~ KANJI_REGEX }
-        
+
       new_characters - previous_characters
     end
 

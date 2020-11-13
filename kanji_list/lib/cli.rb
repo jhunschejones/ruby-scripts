@@ -1,6 +1,6 @@
 class CLI
   MENU_OPTIONS = [
-    SHOW_NEXT_OPTION = "Next new character from word list",
+    SHOW_NEXT_OPTION = "Next character from word list",
     ADVANCED_OPTION = "Advanced options",
     QUIT_OPTION = "Quit"
   ].freeze
