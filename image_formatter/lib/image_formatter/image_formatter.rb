@@ -24,8 +24,7 @@ class ImageFormatter
       begin
         log("====== Tinyifying #{image.filename} ======".yellow)
         create_temp_file
-        tinyify_image
-        log("====== Generated #{tinyified_file_name} ======".green)
+        log("====== Generated #{tinyify_image} ======".green)
         backup_origional_image
       rescue => e
         log("Unable to tinyify #{image.filename}: #{e.message}".red)
@@ -52,12 +51,17 @@ class ImageFormatter
     # This image magic gemoetry syntax instructs the library to resize the image
     # if the height is greater than our max height, then save it to the same
     # file name.
-    image.mini_magick.geometry("x#{TARGET_HEIGHT_PX}>").write(resized_file_name)
+    image.mini_magick.geometry("x#{TARGET_HEIGHT_PX}>").write(safe_resized_file_name)
   end
 
   def tinyify_image
-    return puts "... Bleep bloop blap ...".magenta if ENV["DRY_RUN"]
-    Tinify.from_file(image.filename).to_file(tinyified_file_name)
+    processed_file_name = safe_tinyified_file_name
+    if ENV["DRY_RUN"]
+      puts "... Bleep bloop blap ...".magenta
+    else
+      Tinify.from_file(image.filename).to_file(processed_file_name)
+    end
+    processed_file_name
   end
 
   def create_temp_file
@@ -69,20 +73,16 @@ class ImageFormatter
   end
 
   def backup_origional_image
-    if image_already_resized? || backup_image_already_exists?
+    if image_already_resized?
       # If the image has already been resized it is not an origional which
       # means we do not need to worry about backing it up.
       File.delete(image.filename)
     else
-      FileUtils.mv(image.filename, BACKUP_FILES_PATH)
+      File.rename(image.filename, safe_backup_file_name)
     end
   end
 
   def image_already_resized?
     image.filename.include?(RESIZED_SUFFIX)
-  end
-
-  def backup_image_already_exists?
-    File.exist?(backup_file_name)
   end
 end
