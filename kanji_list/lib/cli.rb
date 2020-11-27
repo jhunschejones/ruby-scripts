@@ -1,12 +1,13 @@
 class CLI
   MENU_OPTIONS = [
     SHOW_NEXT_OPTION = "Next character from word list",
-    ADVANCED_OPTION = "Advanced options",
+    RELOAD_WORD_LIST_OPTION = "Reload word list",
+    TOTALS_OPTION = "Total kanji count",
+    ADVANCED_OPTION = "More options",
     QUIT_OPTION = "Quit"
   ].freeze
   NEXT_KANJI_OPTIONS = ["Add", "Skip", "Back"].freeze
   ADVANCED_OPTIONS = [
-    TOTALS_OPTION = "Totals",
     ADD_OPTION = "Add (freeform)",
     SKIP_OPTION = "Skip (freeform)",
     REMOVE_OPTION = "Remove (freeform)",
@@ -19,9 +20,18 @@ class CLI
 
   def run
     loop do
-      case @prompt.select("What would you like to do? #{new_characters_remaining_message}", menu_options)
+      case @prompt.select(
+        "What would you like to do? #{new_characters_remaining_message}",
+        menu_options,
+        filter: true,
+        cycle: true
+      )
       when SHOW_NEXT_OPTION
         next_new_character_menu
+      when RELOAD_WORD_LIST_OPTION
+        # Just loop back around to the top to re-calculate remaining character count
+      when TOTALS_OPTION
+        puts "Total kanji added: #{Kanji.where(status: Kanji::ADDED_STATUS).count}".cyan
       when ADVANCED_OPTION
         advanced_menu
       when QUIT_OPTION
@@ -54,8 +64,6 @@ class CLI
 
   def advanced_menu
     case @prompt.select("Advanced options:", ADVANCED_OPTIONS)
-    when TOTALS_OPTION
-      puts "Total kanji added: #{Kanji.where(status: Kanji::ADDED_STATUS).count}".cyan
     when ADD_OPTION
       kanji_to_add = @prompt.ask("What kanji would you like to add?")
       puts "Kanji added: #{Kanji.add(kanji_to_add).character}".green
