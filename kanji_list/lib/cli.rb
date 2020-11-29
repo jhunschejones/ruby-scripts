@@ -1,21 +1,29 @@
 class CLI
   MENU_OPTIONS = [
     SHOW_NEXT_OPTION = "Next character from word list",
-    RELOAD_WORD_LIST_OPTION = "Reload word list",
-    TOTALS_OPTION = "Total kanji count",
     ADVANCED_OPTION = "More options",
     QUIT_OPTION = "Quit"
   ].freeze
   NEXT_KANJI_OPTIONS = ["Add", "Skip", "Back"].freeze
   ADVANCED_OPTIONS = [
-    ADD_OPTION = "Add (freeform)",
-    SKIP_OPTION = "Skip (freeform)",
-    REMOVE_OPTION = "Remove (freeform)",
+    TOTALS_OPTION = "Total kanji count",
+    ADD_TO_WORD_LIST_OPTION = "Add new words to word list",
+    ADD_OPTION = "Add kanji (freeform)",
+    SKIP_OPTION = "Skip kanji (freeform)",
+    REMOVE_OPTION = "Remove kanji (freeform)",
     BACK_OPTION = "Back".freeze
   ].freeze
 
   def initialize
-    @prompt = TTY::Prompt.new(interrupt: :exit, active_color: :green)
+    @prompt = TTY::Prompt.new(
+      interrupt: Proc.new do
+        puts "\n"
+        show_total_kanji_added
+        exit 0
+      end,
+      active_color: :green,
+      track_history: false # https://github.com/piotrmurach/tty-prompt#38-track_history
+    )
   end
 
   def run
@@ -28,27 +36,16 @@ class CLI
       )
       when SHOW_NEXT_OPTION
         next_new_character_menu
-      when RELOAD_WORD_LIST_OPTION
-        # Just loop back around to the top to re-calculate remaining character count
-      when TOTALS_OPTION
-        puts "Total kanji added: #{Kanji.where(status: Kanji::ADDED_STATUS).count}".cyan
       when ADVANCED_OPTION
         advanced_menu
       when QUIT_OPTION
+        show_total_kanji_added
         exit 0
       end
     end
   end
 
   private
-
-  def menu_options
-    Kanji.next ? MENU_OPTIONS : MENU_OPTIONS[1..-1]
-  end
-
-  def new_characters_remaining_message
-    "(#{Kanji.remaining_characters.size} kanji remaining)".cyan
-  end
 
   def next_new_character_menu
     next_kanji = Kanji.next
@@ -63,7 +60,16 @@ class CLI
   end
 
   def advanced_menu
-    case @prompt.select("Advanced options:", ADVANCED_OPTIONS)
+    case @prompt.select(
+      "Advanced options:",
+      ADVANCED_OPTIONS,
+      filter: true,
+      cycle: true
+    )
+    when TOTALS_OPTION
+      show_total_kanji_added
+    when ADD_TO_WORD_LIST_OPTION
+      add_new_words_to_word_list
     when ADD_OPTION
       kanji_to_add = @prompt.ask("What kanji would you like to add?")
       puts "Kanji added: #{Kanji.add(kanji_to_add).character}".green
@@ -78,6 +84,31 @@ class CLI
       else
         puts "Unable to find kanji character: #{kanji_to_remove.inspect}".red
       end
+    end
+  end
+
+  def menu_options
+    Kanji.next ? MENU_OPTIONS : MENU_OPTIONS[1..-1]
+  end
+
+  def new_characters_remaining_message
+    "(#{Kanji.remaining_characters.size} kanji remaining)".cyan
+  end
+
+  def show_total_kanji_added
+    puts "Total kanji added: #{Kanji.where(status: Kanji::ADDED_STATUS).count}".cyan
+  end
+
+  def add_new_words_to_word_list
+    new_words = @prompt
+      .multiline("Add words separated by newlines or commas")
+      .flat_map { |word| word.split(",") }
+      .map { |word| word.chomp.strip }
+
+    old_words = YAML::load(File.open(WORD_LIST_YAML_PATH))[WORD_LIST_KEY]
+
+    File.open(WORD_LIST_YAML_PATH, "w") do |file|
+      file.write({ WORD_LIST_KEY => (old_words + new_words).uniq }.to_yaml)
     end
   end
 end
