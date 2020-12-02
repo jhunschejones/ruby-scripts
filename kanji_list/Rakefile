@@ -1,6 +1,6 @@
-require 'sinatra/activerecord'
-require 'sinatra/activerecord/rake'
-require_relative 'lib/module_loader'
+require "sinatra/activerecord"
+require "sinatra/activerecord/rake"
+require_relative "lib/module_loader"
 
 namespace :db do
   desc "Dump the database to a yaml file"

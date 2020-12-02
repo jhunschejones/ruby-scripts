@@ -1,13 +1,13 @@
 class CLI
   MENU_OPTIONS = [
     SHOW_NEXT_OPTION = "Next character from word list",
+    ADD_TO_WORD_LIST_OPTION = "Add new words to word list",
     ADVANCED_OPTION = "More options",
     QUIT_OPTION = "Quit"
   ].freeze
   NEXT_KANJI_OPTIONS = ["Add", "Skip", "Back"].freeze
   ADVANCED_OPTIONS = [
     TOTALS_OPTION = "Total kanji count",
-    ADD_TO_WORD_LIST_OPTION = "Add new words to word list",
     ADD_OPTION = "Add kanji (freeform)",
     SKIP_OPTION = "Skip kanji (freeform)",
     REMOVE_OPTION = "Remove kanji (freeform)",
@@ -17,12 +17,11 @@ class CLI
   def initialize
     @prompt = TTY::Prompt.new(
       interrupt: Proc.new do
-        puts "\n"
-        show_total_kanji_added
+        puts "\n#{total_kanji_added_message}"
         exit 0
       end,
       active_color: :green,
-      track_history: false # https://github.com/piotrmurach/tty-prompt#38-track_history
+      track_history: false
     )
   end
 
@@ -36,10 +35,12 @@ class CLI
       )
       when SHOW_NEXT_OPTION
         next_new_character_menu
+      when ADD_TO_WORD_LIST_OPTION
+        add_new_words_to_word_list
       when ADVANCED_OPTION
         advanced_menu
       when QUIT_OPTION
-        show_total_kanji_added
+        puts total_kanji_added_message
         exit 0
       end
     end
@@ -67,9 +68,7 @@ class CLI
       cycle: true
     )
     when TOTALS_OPTION
-      show_total_kanji_added
-    when ADD_TO_WORD_LIST_OPTION
-      add_new_words_to_word_list
+      puts total_kanji_added_message
     when ADD_OPTION
       kanji_to_add = @prompt.ask("What kanji would you like to add?")
       puts "Kanji added: #{Kanji.add(kanji_to_add).character}".green
@@ -95,15 +94,14 @@ class CLI
     "(#{Kanji.remaining_characters.size} kanji remaining)".cyan
   end
 
-  def show_total_kanji_added
-    puts "Total kanji added: #{Kanji.where(status: Kanji::ADDED_STATUS).count}".cyan
+  def total_kanji_added_message
+    "Total kanji added: #{Kanji.where(status: Kanji::ADDED_STATUS).count}".cyan
   end
 
   def add_new_words_to_word_list
     new_words = @prompt
       .multiline("Add words separated by newlines or commas")
-      .flat_map { |word| word.split(",") }
-      .map { |word| word.chomp.strip }
+      .flat_map { |word| word.split(",").map(&:strip) }
 
     old_words = YAML::load(File.open(WORD_LIST_YAML_PATH))[WORD_LIST_KEY]
 
