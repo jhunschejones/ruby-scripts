@@ -1,5 +1,5 @@
 class ImageFormatter
-  include FileName
+  include ImageFileName
 
   TARGET_HEIGHT_PX = 480
   TARGET_FILESIZE_KB = 50
@@ -22,9 +22,8 @@ class ImageFormatter
 
     if image.filesize_kb > TARGET_FILESIZE_KB
       begin
-        log("====== Tinyifying #{image.filename} ======".yellow)
+        log("====== Tinyifying #{image.filename} ======".green)
         create_temp_file
-        log("====== Generated #{tinyify_image} ======".green)
         backup_origional_image
       rescue => e
         log("Unable to tinyify #{image.filename}: #{e.message}".red)
