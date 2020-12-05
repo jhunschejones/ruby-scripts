@@ -38,9 +38,11 @@ module FileManager
 
         movie_name = MovieTitle.new(text: dig_for_movie_name(dir)).format.text
 
-        # rename all files
+        # rename all visible files that are not directories
         Dir.entries('.').each do |file|
-          File.rename(file, movie_name + File.extname(file)) unless file[0] == '.'
+          unless file[0] == '.' || File.directory?(file)
+            File.rename(file, movie_name + File.extname(file))
+          end
         end
 
         Dir.chdir("..")
