@@ -24,6 +24,7 @@ class ImageFormatter
       begin
         log("====== Tinyifying #{image.filename} ======".green)
         create_temp_file
+        tinyify_image
         backup_origional_image
       rescue => e
         log("Unable to tinyify #{image.filename}: #{e.message}".red)

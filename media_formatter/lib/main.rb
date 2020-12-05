@@ -14,7 +14,7 @@ FileUtils.mkdir_p(AUDIO_WATCH_DIRECTORY) unless Dir.exist?(AUDIO_WATCH_DIRECTORY
 # == Make sure Tinyfy config is working on startup ==
 Tinify.key = ENV["TINIFY_API_KEY"]
 Tinify.validate!
-log("#{Tinify.compression_count} compressions this month")
+log("#{Tinify.compression_count} image compressions this month")
 
 # == Run file watcher loop ==
 Filewatcher.new([IMAGE_WATCH_PATH, AUDIO_WATCH_PATH], exclude: BACKUP_IMAGE_FILES_PATH, interval: 0).watch do |watcher_event|

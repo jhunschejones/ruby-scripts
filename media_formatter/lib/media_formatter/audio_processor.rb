@@ -10,7 +10,9 @@ class AudioProcessor
   end
 
   def process_event
+    return File.rename(filename, cli_safe_file_name) unless filename == cli_safe_file_name
     raise "Unable to find audio file duration" if input_file_duration.empty?
+
     log("====== Processing #{filename} ======".magenta)
     if audio_is_too_short?
       %x[ffmpeg -y -hide_banner -loglevel panic -i '#{filename}' -af apad,atrim=0:3,loudnorm=I=-16:TP=-1.5,atrim=0:#{input_file_duration} -ar 44.1k '#{safe_processed_filename}']
@@ -45,6 +47,10 @@ class AudioProcessor
   def safe_processed_filename
     return processed_filename unless File.exist?(processed_filename)
     "#{AUDIO_WATCH_DIRECTORY}/#{base_filename}_#{SecureRandom.uuid}#{PROCESSED_SUFFIX}.mp3"
+  end
+
+  def cli_safe_file_name
+    "#{AUDIO_WATCH_DIRECTORY}/#{base_filename.parameterize.underscore}#{File.extname(filename)}"
   end
 
   def input_file_duration
