@@ -1,6 +1,8 @@
 class AudioProcessor
   SUPPORTED_EXTENSIONS = [".mp3", ".m4a"].freeze
   PROCESSED_SUFFIX = "_processed".freeze
+  PEAK_LEVEL = -3.freeze
+  LOUDNESS = -18.freeze
 
   attr_reader :event, :filename
 
@@ -15,9 +17,9 @@ class AudioProcessor
 
     log("====== Processing #{filename} ======".magenta)
     if audio_is_too_short?
-      %x[ffmpeg -y -hide_banner -loglevel panic -i '#{filename}' -af apad,atrim=0:3,loudnorm=I=-16:TP=-1.5,atrim=0:#{input_file_duration} -ar 44.1k '#{safe_processed_filename}']
+      %x[ffmpeg -y -hide_banner -loglevel panic -i '#{filename}' -af apad,atrim=0:3,loudnorm=I=#{LOUDNESS}:TP=#{PEAK_LEVEL},atrim=0:#{input_file_duration} -ar 44.1k '#{safe_processed_filename}']
     else
-      %x[ffmpeg -y -hide_banner -loglevel panic -i '#{filename}' -af loudnorm=I=-16:TP=-1.5 -ar 44.1k '#{safe_processed_filename}']
+      %x[ffmpeg -y -hide_banner -loglevel panic -i '#{filename}' -af loudnorm=I=#{LOUDNESS}:TP=#{PEAK_LEVEL}-ar 44.1k '#{safe_processed_filename}']
     end
     File.delete(filename)
   rescue => e
