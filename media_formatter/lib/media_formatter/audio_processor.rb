@@ -1,61 +1,55 @@
 class AudioProcessor
+  include AudioFileName
+
   SUPPORTED_EXTENSIONS = [".mp3", ".m4a"].freeze
-  PROCESSED_SUFFIX = "_processed".freeze
   PEAK_LEVEL = -3.freeze
   LOUDNESS = -18.freeze
 
   attr_reader :event, :filename
 
-  def initialize(filename, event)
-    @event = event
-    @filename = filename
+  def initialize(filename_from_event, event_name)
+    @event = event_name
+    @filename = filename_from_event
   end
 
   def process_event
+    # If the filename is not CLI safe, just rename the file on this pass.
+    # The filewatcher will catch the safe-named file on the next pass and
+    # we'll process it then.
     return File.rename(filename, cli_safe_file_name) unless filename == cli_safe_file_name
     raise "Unable to find audio file duration" if input_file_duration.empty?
-
     log("====== Processing #{filename} ======".magenta)
+
     if audio_is_too_short?
+      # ffmpeg has trouble determining loudness for audio files > 3s in length.
+      # To work around this limitation, this command pads the file out to 3s,
+      # processes it, then trims it back to the original file length.
       %x[ffmpeg -y -hide_banner -loglevel panic -i '#{filename}' -af apad,atrim=0:3,loudnorm=I=#{LOUDNESS}:TP=#{PEAK_LEVEL},atrim=0:#{input_file_duration} -ar 44.1k '#{safe_processed_filename}']
     else
-      %x[ffmpeg -y -hide_banner -loglevel panic -i '#{filename}' -af loudnorm=I=#{LOUDNESS}:TP=#{PEAK_LEVEL}-ar 44.1k '#{safe_processed_filename}']
+      %x[ffmpeg -y -hide_banner -loglevel panic -i '#{filename}' -af loudnorm=I=#{LOUDNESS}:TP=#{PEAK_LEVEL} -ar 44.1k '#{safe_processed_filename}']
     end
-    File.delete(filename)
+    backup_origional_file
   rescue => e
     log("Unable to process #{filename}: #{e.message}".red)
   end
 
   def should_process_event?
     event == :created &&
-      !filename.include?(PROCESSED_SUFFIX) &&
-      SUPPORTED_EXTENSIONS.include?(File.extname(filename))
+      !filename.include?(processed_suffix) &&
+      SUPPORTED_EXTENSIONS.include?(file_extension)
   end
 
   private
+
+  def input_file_duration
+    @input_file_duration ||= %x[ffprobe -i '#{filename}' -show_entries format=duration -v quiet -of csv='p=0'].chomp
+  end
 
   def audio_is_too_short?
     input_file_duration.to_f < 3.0
   end
 
-  def base_filename
-    File.basename(filename, File.extname(filename))
-  end
-
-  def processed_filename
-    "#{AUDIO_WATCH_DIRECTORY}/#{base_filename}#{PROCESSED_SUFFIX}.mp3"
-  end
-
-  def safe_processed_filename
-    return processed_filename unless File.exist?(processed_filename)
-    "#{AUDIO_WATCH_DIRECTORY}/#{base_filename}_#{SecureRandom.uuid}#{PROCESSED_SUFFIX}.mp3"
-  end
-
-  def cli_safe_file_name
-    "#{AUDIO_WATCH_DIRECTORY}/#{base_filename.parameterize.underscore}#{File.extname(filename)}"
-  end
-
-  def input_file_duration
-    @input_file_duration ||= %x[ffprobe -i '#{filename}' -show_entries format=duration -v quiet -of csv='p=0'].chomp
+  def backup_origional_file
+    File.rename(filename, safe_backup_file_name)
   end
 end

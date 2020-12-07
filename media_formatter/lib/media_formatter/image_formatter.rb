@@ -7,14 +7,14 @@ class ImageFormatter
 
   attr_reader :event, :image
 
-  def initialize(filename, event)
-    @event = event
-    @image = Image.new(filename)
+  def initialize(filename_from_event, event_name)
+    @event = event_name
+    @image = Image.new(filename_from_event)
   end
 
   def process_event
     if image.height > TARGET_HEIGHT_PX
-      log("====== Resizing #{image.filename} ======".yellow)
+      log("====== Resizing #{filename} ======".yellow)
       backup_origional_image
       resize_image
       return true
@@ -22,30 +22,34 @@ class ImageFormatter
 
     if image.filesize_kb > TARGET_FILESIZE_KB
       begin
-        log("====== Tinyifying #{image.filename} ======".green)
+        log("====== Tinyifying #{filename} ======".green)
         create_temp_file
         tinyify_image
         backup_origional_image
       rescue => e
-        log("Unable to tinyify #{image.filename}: #{e.message}".red)
+        log("Unable to tinyify #{filename}: #{e.message}".red)
       end
 
       clean_up_temp_file
       return true
     end
 
-    puts "Skipping #{event} event for #{image.filename}: filesize is already small enough"
+    puts "Skipping #{event} event for #{filename}: filesize is already small enough"
   end
 
   def should_process_event?
     event == :created &&
-      !image.filename.include?(TINYIFIED_IMAGE_SUFFIX) &&
-      !image.filename.include?(TEMP_FILE_EXTENSION) &&
-      image.filename[-1] != MINI_MAGICK_TEMP_SUFFIX &&
-      SUPPORTED_EXTENSIONS.include?(extension)
+      !filename.include?(TINYIFIED_IMAGE_SUFFIX) &&
+      !filename.include?(TEMP_FILE_EXTENSION) &&
+      filename[-1] != MINI_MAGICK_TEMP_SUFFIX &&
+      SUPPORTED_EXTENSIONS.include?(file_extension)
   end
 
   private
+
+  def filename
+    @image.filename
+  end
 
   def resize_image
     # This image magic gemoetry syntax instructs the library to resize the image
@@ -59,7 +63,7 @@ class ImageFormatter
     if ENV["DRY_RUN"]
       puts "... Bleep bloop blap ...".magenta
     else
-      Tinify.from_file(image.filename).to_file(processed_file_name)
+      Tinify.from_file(filename).to_file(processed_file_name)
     end
     processed_file_name
   end
@@ -76,13 +80,13 @@ class ImageFormatter
     if image_already_resized?
       # If the image has already been resized it is not an origional which
       # means we do not need to worry about backing it up.
-      File.delete(image.filename)
+      File.delete(filename)
     else
-      File.rename(image.filename, safe_backup_file_name)
+      File.rename(filename, safe_backup_file_name)
     end
   end
 
   def image_already_resized?
-    image.filename.include?(RESIZED_SUFFIX)
+    filename.include?(RESIZED_SUFFIX)
   end
 end
