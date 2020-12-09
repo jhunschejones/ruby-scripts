@@ -4,12 +4,12 @@ module AudioFileName
   protected
 
   def processed_filename
-    "#{AUDIO_WATCH_DIRECTORY}/#{base_filename}#{processed_suffix}.mp3"
+    "#{AUDIO_DEPOSIT_DIRECTORY}/#{base_filename}#{processed_suffix}.mp3"
   end
 
   def safe_processed_filename
     return processed_filename unless File.exist?(processed_filename)
-    "#{AUDIO_WATCH_DIRECTORY}/#{base_filename}_#{SecureRandom.uuid}#{processed_suffix}.mp3"
+    "#{AUDIO_DEPOSIT_DIRECTORY}/#{base_filename}_#{SecureRandom.uuid}#{processed_suffix}.mp3"
   end
 
   def backup_file_name

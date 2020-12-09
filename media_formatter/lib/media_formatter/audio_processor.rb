@@ -3,7 +3,7 @@ class AudioProcessor
 
   SUPPORTED_EXTENSIONS = [".mp3", ".m4a"].freeze
   PEAK_LEVEL = -3.freeze
-  LOUDNESS = -18.freeze
+  LOUDNESS = -20.freeze
 
   attr_reader :event, :filename
 
