@@ -13,3 +13,5 @@ $logger = Logger.new("tmp/log.txt")
 WORD_LIST_YAML_PATH = "config/word_list.yml".freeze
 WORD_LIST_KEY = "new_words".freeze
 KANJI_YAML_DUMP_PATH = "db/kanji_list_dump.yml".freeze
+
+File.write(WORD_LIST_YAML_PATH, "#{WORD_LIST_KEY}: []") unless File.exist?(WORD_LIST_YAML_PATH)

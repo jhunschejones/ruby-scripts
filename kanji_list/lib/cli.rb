@@ -70,8 +70,15 @@ class CLI
     when TOTALS_OPTION
       puts total_kanji_added_message
     when ADD_OPTION
-      kanji_to_add = @prompt.ask("What kanji would you like to add?")
-      puts "Kanji added: #{Kanji.add(kanji_to_add).character}".green
+      kanji_to_add = Kanji.new(
+        character: @prompt.ask("What kanji would you like to add?"),
+        status: Kanji::ADDED_STATUS
+      )
+      if kanji_to_add.save
+        puts "Kanji added: #{kanji_to_add.character}".green
+      else
+        puts "#{kanji_to_add.character} #{kanji_to_add.errors.first.message}".red
+      end
     when SKIP_OPTION
       kanji_to_skip = @prompt.ask("What kanji would you like to skip?")
       puts "Kanji skipped: #{Kanji.skip(kanji_to_skip).character}".green

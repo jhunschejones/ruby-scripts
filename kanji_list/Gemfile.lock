@@ -12,14 +12,19 @@ GEM
       minitest (>= 5.1)
       tzinfo (~> 2.0)
       zeitwerk (~> 2.3)
+    coderay (1.1.3)
     concurrent-ruby (1.1.8)
     i18n (1.8.9)
       concurrent-ruby (~> 1.0)
+    method_source (1.0.0)
     minitest (5.14.4)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
     pastel (0.8.0)
       tty-color (~> 0.5)
+    pry (0.14.0)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
     rack (2.2.3)
     rack-protection (2.1.0)
       rack
@@ -55,6 +60,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord (~> 6.0, >= 6.0.3.4)
+  pry
   rake
   sinatra-activerecord
   sqlite3 (~> 1.4)
