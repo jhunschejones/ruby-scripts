@@ -5,13 +5,50 @@ require_relative "lib/module_loader"
 namespace :db do
   desc "Dump the database to a yaml file"
   task :dump_to_yaml do
-    puts "\033[33mDumping database to ./db/kanji_list_dump.yml\033[0m"
+    puts "\033[33mDumping database to ./#{KANJI_YAML_DUMP_PATH}\033[0m"
     Kanji.dump_to_yaml
   end
 
   desc "Reset the database from a yaml file"
   task :load_from_yaml do
-    puts "\033[33mLoading database from ./db/kanji_list_dump.yml\033[0m"
+    puts "\033[33mLoading database from ./#{KANJI_YAML_DUMP_PATH}\033[0m"
     Kanji.load_from_yaml_dump
+  end
+
+  desc "Upload the database file and YAML dump to S3"
+  task :upload_to_s3 do
+    db_file_name = YAML::load(File.open("config/database.yml"))["development"]["database"]
+    client = Aws::S3::Client.new
+    client.list_objects(bucket: AWS_BUCKET) # make sure creds work
+
+    puts "\033[33mUploading ./#{db_file_name} to S3\033[0m"
+    Aws::S3::Resource.new
+      .bucket(AWS_BUCKET)
+      .object(db_file_name.split("/").last)
+      .upload_file("./#{db_file_name}")
+
+    Rake::Task["db:dump_to_yaml"].invoke
+    puts "\033[33mUploading ./#{KANJI_YAML_DUMP_PATH} to S3\033[0m"
+    Aws::S3::Resource.new
+      .bucket(AWS_BUCKET)
+      .object(KANJI_YAML_DUMP_PATH.split("/").last)
+      .upload_file("./#{KANJI_YAML_DUMP_PATH}")
+  end
+
+  desc "Download the database file and YAML dump from S3"
+  task :download_from_s3 do
+    db_file_name = YAML::load(File.open("config/database.yml"))["development"]["database"]
+    client = Aws::S3::Client.new
+    client.list_objects(bucket: AWS_BUCKET) # make sure creds work
+
+    puts "\033[33mDownloading ./#{db_file_name} from S3\033[0m"
+    File.open("./#{db_file_name}", "wb") do |file|
+      client.get_object({ bucket: AWS_BUCKET, key: db_file_name.split("/").last }, target: file)
+    end
+
+    puts "\033[33mDownloading ./#{KANJI_YAML_DUMP_PATH} from S3\033[0m"
+    File.open("./#{KANJI_YAML_DUMP_PATH}", "wb") do |file|
+      client.get_object({ bucket: AWS_BUCKET, key: KANJI_YAML_DUMP_PATH.split("/").last }, target: file)
+    end
   end
 end
