@@ -1,0 +1,11 @@
+#!/bin/bash
+
+read -p $'Overwrite the database backup in S3?\033[0;36m [Y/n] \033[0m' -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+  echo "Attempting to backup to S3..."
+  . ./tmp/.env && bundle exec rake db:upload_to_s3
+else
+  echo "Skipped backup"
+fi
