@@ -1,6 +1,3 @@
-#!/usr/bin/env ruby
-require_relative '../lib/module_loader'
+#!/bin/bash
 
-system "clear"
-puts "=======  Welcome to Kanji List!  =======".cyan
-CLI.new.run
+. ./tmp/.env && clear && gtimeout --foreground 90m bundle exec ruby lib/main.rb

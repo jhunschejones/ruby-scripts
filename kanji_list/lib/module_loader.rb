@@ -5,7 +5,9 @@ require "active_record"
 require "aws-sdk-s3"
 require_relative "../db/connection"
 
-Dir["#{File.dirname(__FILE__)}/**/*.rb"].each { |f| require(f) }
+Dir["#{File.dirname(__FILE__)}/**/*.rb"].each do |file|
+  require(file) unless File.basename(file) == 'main.rb'
+end
 
 ActiveRecord::Base.logger = Logger.new(STDOUT) if ENV["LOG_QUERIES"]
 $logger = Logger.new("tmp/log.txt")
