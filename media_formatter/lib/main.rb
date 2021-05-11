@@ -1,12 +1,12 @@
 require_relative './module_loader.rb'
 
-IMAGE_WATCH_DIRECTORY = File.expand_path("~/Downloads/Card\ Images").freeze
+IMAGE_WATCH_DIRECTORY = File.expand_path("~/Downloads/Japanese/Card\ Images").freeze
 IMAGE_WATCH_PATH = "#{IMAGE_WATCH_DIRECTORY}/*".freeze
-BACKUP_IMAGE_FILES_PATH = File.expand_path("~/Downloads/Card\ Images/_Pre\ Tinyification\ Images").freeze
-AUDIO_WATCH_DIRECTORY = File.expand_path("~/Downloads/Card\ Audio/To\ Process").freeze
+BACKUP_IMAGE_FILES_PATH = File.expand_path("~/Downloads/Japanese/Card\ Images/_Pre\ Tinyification\ Images").freeze
+AUDIO_WATCH_DIRECTORY = File.expand_path("~/Downloads/Japanese/Card\ Audio/To\ Process").freeze
 AUDIO_WATCH_PATH = "#{AUDIO_WATCH_DIRECTORY}/*".freeze
-AUDIO_DEPOSIT_DIRECTORY = File.expand_path("~/Downloads/Card\ Audio/").freeze
-BACKUP_AUDIO_FILES_PATH = File.expand_path("~/Downloads/Card\ Audio/To\ Process/_RAW").freeze
+AUDIO_DEPOSIT_DIRECTORY = File.expand_path("~/Downloads/Japanese/Card\ Audio/").freeze
+BACKUP_AUDIO_FILES_PATH = File.expand_path("~/Downloads/Japanese/Card\ Audio/To\ Process/_RAW").freeze
 
 # == Locate or create required state on startup ==
 puts "Image Formatter is running for '#{IMAGE_WATCH_PATH}'".cyan
