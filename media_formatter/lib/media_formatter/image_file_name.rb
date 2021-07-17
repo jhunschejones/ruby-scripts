@@ -15,7 +15,7 @@ module ImageFileName
   end
 
   def safe_resized_file_name
-    return resized_file_name unless File.exist?(tinyified_file_name)
+    return resized_file_name unless File.exist?(resized_file_name)
     "#{IMAGE_WATCH_DIRECTORY}/#{base_filename}_#{SecureRandom.uuid}#{RESIZED_SUFFIX}#{file_extension}"
   end
 
