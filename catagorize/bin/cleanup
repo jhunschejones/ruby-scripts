@@ -1,0 +1,3 @@
+#!/bin/bash
+
+rm expenses.csv parsed_expenses/expenses_by_vendor.csv parsed_expenses/parsed_expenses.csv parsed_expenses/unknown_vendors.csv
