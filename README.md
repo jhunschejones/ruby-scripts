@@ -10,3 +10,4 @@ This repo houses a somewhat eclectic collection of Ruby scripts I've created at 
 * [`unique_cards`](https://github.com/jhunschejones/Ruby-Scripts/tree/master/unique_cards): An tool for preforming cross-profile searches on Anki deck exports
 * [`spotify_ruby`](https://github.com/jhunschejones/Ruby-Scripts/tree/master/spotify_ruby): A console app to play with the Spotify API for potential use in a future version of Album Tags.
 * [`vlc_dual_audio`](https://github.com/jhunschejones/Ruby-Scripts/tree/master/vlc_dual_audio): A script to wrap the VLC CLI tool and make playing dual audio movies easier.
+* [`cost_adder`](https://github.com/jhunschejones/Ruby-Scripts/tree/master/cost_adder): A script that reads dollar values out of a blob of text and sums the total of the amounts.
