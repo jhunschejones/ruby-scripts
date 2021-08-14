@@ -6,7 +6,7 @@ This script parses a CSV and reformats it to better fit my expense tracking tool
 ## To Use:
 1. Configure the vendors you want to use to auto-populate the categories column in `./vendors.yml` _(see example entry for required formatting)_
 2. Dump the raw CSV into the root directory named `expenses.csv`
-3. Run `ruby catagorize.rb`
+3. Run `ruby categorize.rb`
 4. `parsed_expenses.csv` will be created with the reformatted data
 
 ## Limitations:
