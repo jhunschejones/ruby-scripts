@@ -5,7 +5,7 @@ echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
   echo "Attempting to backup to S3..."
-  . ./tmp/.env && bundle exec rake db:upload_to_s3
+  . ./tmp/.env && SCRIPT_ENV=development bundle exec rake db:upload_to_s3
 else
   echo "Skipped backup"
 fi

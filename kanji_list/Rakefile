@@ -17,7 +17,7 @@ namespace :db do
 
   desc "Upload the database file and YAML dump to S3"
   task :upload_to_s3 do
-    db_file_name = YAML::load(File.open("config/database.yml"))["development"]["database"]
+    db_file_name = YAML::load(File.open("config/database.yml")).fetch(ENV["SCRIPT_ENV"])["database"]
     client = Aws::S3::Client.new
     client.list_objects(bucket: AWS_BUCKET) # make sure creds work
 
@@ -37,7 +37,7 @@ namespace :db do
 
   desc "Download the database file and YAML dump from S3"
   task :download_from_s3 do
-    db_file_name = YAML::load(File.open("config/database.yml"))["development"]["database"]
+    db_file_name = YAML::load(File.open("config/database.yml")).fetch(ENV["SCRIPT_ENV"])["database"]
     client = Aws::S3::Client.new
     client.list_objects(bucket: AWS_BUCKET) # make sure creds work
 
