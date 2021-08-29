@@ -1,6 +1,6 @@
 class CLI
   MENU_OPTIONS = [
-    SHOW_NEXT_OPTION = "Next character from word list",
+    SHOW_NEXT_CHARACTER_OPTION = "Next character from word list",
     ADD_TO_WORD_LIST_OPTION = "Add new words to word list",
     ADVANCED_OPTION = "More options",
     QUIT_OPTION = "Quit"
@@ -33,7 +33,7 @@ class CLI
         filter: true,
         cycle: true
       )
-      when SHOW_NEXT_OPTION
+      when SHOW_NEXT_CHARACTER_OPTION
         next_new_character_menu
       when ADD_TO_WORD_LIST_OPTION
         add_new_words_to_word_list
@@ -52,7 +52,14 @@ class CLI
     next_kanji = Kanji.next
     # copy the next character to the clipboard (without newline)
     system("echo #{next_kanji.character} | tr -d '\n' | pbcopy")
+
+    puts "https://app.kanjialive.com/#{next_kanji.character}".green
+    puts "https://en.wiktionary.org/wiki/#{next_kanji.character}#Japanese".green
+
     case @prompt.select("Next kanji: #{next_kanji.character.cyan}", NEXT_KANJI_OPTIONS)
+    # when "Open URLs"
+    #   system("open https://app.kanjialive.com/#{next_kanji.character}")
+    #   system("open https://en.wiktionary.org/wiki/#{next_kanji.character}#Japanese")
     when "Add"
       next_kanji.add!
     when "Skip"
