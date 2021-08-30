@@ -10,7 +10,7 @@ Dir["#{File.dirname(__FILE__)}/**/*.rb"].each do |file|
 end
 
 ActiveRecord::Base.logger = Logger.new(STDOUT) if ENV["LOG_QUERIES"]
-$logger = Logger.new("tmp/log.txt")
+$logger = Logger.new("tmp/log.txt") unless ENV["SCRIPT_ENV"] == "test"
 
 WORD_LIST_KEY = "new_words".freeze
 

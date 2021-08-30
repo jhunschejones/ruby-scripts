@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+ENV["SCRIPT_ENV"] = "test"
+ENV["RACK_ENV"] = "test"
+
+Dir["#{Dir.pwd}/**/*.rb"].each do |file|
+  require(file) if File.basename(file).include?("_test")
+end

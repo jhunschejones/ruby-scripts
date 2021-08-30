@@ -69,8 +69,8 @@ class Kanji < ActiveRecord::Base
     def load_from_yaml_dump
       dump = YAML::load(File.open(KANJI_YAML_DUMP_PATH))
       Kanji.destroy_all
-      dump["added_kanji"].each { |kanji| p Kanji.add(kanji) }
-      dump["skipped_kanji"].each { |kanji| p Kanji.skip(kanji) }
+      dump["added_kanji"].each { |kanji| Kanji.add(kanji) }
+      dump["skipped_kanji"].each { |kanji| Kanji.skip(kanji) }
     end
   end
 

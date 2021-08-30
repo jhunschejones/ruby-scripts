@@ -17,3 +17,8 @@ The Rakefile includes a couple custom commands to dump the local database to a y
 For longer term storage, there are also rake commands for backing up and restoring from S3. To use these commands, you will first need to export `AWS_REGION`, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables for the AWS SDK. Then you can either set up your AWS resources to match the naming in the script or adjust the script to match your AWS resource names!
 
 *NOTE: The `./bin/run` command includes an auto-timeout that closes the script after 90 minutes (since I often forget to stop it after I'm done.)
+
+### Test Suite:
+1. `bundle install`
+2. `RACK_ENV=test SCRIPT_ENV=test bundle exec rake db:create db:migrate`
+3. `./bin/test`
