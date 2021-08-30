@@ -50,12 +50,16 @@ class CLI
 
   def next_new_character_menu(open_urls: true)
     next_kanji = Kanji.next
-    options = open_urls ? NEXT_KANJI_OPTIONS : NEXT_KANJI_OPTIONS.dup - ["Open URLs"]
 
     # copy the next character to the clipboard (without newline)
     system("echo #{next_kanji.character} | tr -d '\n' | pbcopy")
 
-    case @prompt.select("Next kanji: #{next_kanji.character.cyan}", options)
+    case @prompt.select(
+      "Next kanji: #{next_kanji.character.cyan}",
+      open_urls ? NEXT_KANJI_OPTIONS : NEXT_KANJI_OPTIONS.dup - ["Open URLs"],
+      filter: true,
+      cycle: true
+    )
     when "Open URLs"
       system("open https://en.wiktionary.org/wiki/#{next_kanji.character}#Japanese")
       system("open https://app.kanjialive.com/#{next_kanji.character}")
