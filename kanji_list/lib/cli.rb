@@ -5,7 +5,7 @@ class CLI
     ADVANCED_OPTION = "More options",
     QUIT_OPTION = "Quit"
   ].freeze
-  NEXT_KANJI_OPTIONS = ["Add", "Skip", "Back"].freeze
+  NEXT_KANJI_OPTIONS = ["Open URLs", "Add", "Skip", "Back"].freeze
   ADVANCED_OPTIONS = [
     TOTALS_OPTION = "Total kanji count",
     ADD_OPTION = "Add kanji (freeform)",
@@ -48,18 +48,18 @@ class CLI
 
   private
 
-  def next_new_character_menu
+  def next_new_character_menu(open_urls: true)
     next_kanji = Kanji.next
+    options = open_urls ? NEXT_KANJI_OPTIONS : NEXT_KANJI_OPTIONS.dup - ["Open URLs"]
+
     # copy the next character to the clipboard (without newline)
     system("echo #{next_kanji.character} | tr -d '\n' | pbcopy")
 
-    puts "https://app.kanjialive.com/#{next_kanji.character}".green
-    puts "https://en.wiktionary.org/wiki/#{next_kanji.character}#Japanese".green
-
-    case @prompt.select("Next kanji: #{next_kanji.character.cyan}", NEXT_KANJI_OPTIONS)
-    # when "Open URLs"
-    #   system("open https://app.kanjialive.com/#{next_kanji.character}")
-    #   system("open https://en.wiktionary.org/wiki/#{next_kanji.character}#Japanese")
+    case @prompt.select("Next kanji: #{next_kanji.character.cyan}", options)
+    when "Open URLs"
+      system("open https://en.wiktionary.org/wiki/#{next_kanji.character}#Japanese")
+      system("open https://app.kanjialive.com/#{next_kanji.character}")
+      next_new_character_menu(open_urls: false)
     when "Add"
       next_kanji.add!
     when "Skip"
