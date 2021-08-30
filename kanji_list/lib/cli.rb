@@ -81,25 +81,27 @@ class CLI
     when TOTALS_OPTION
       puts total_kanji_added_message
     when ADD_OPTION
-      kanji_to_add = Kanji.new(
-        character: @prompt.ask("What kanji would you like to add?"),
-        status: Kanji::ADDED_STATUS
-      )
-      if kanji_to_add.save
-        puts "Kanji added: #{kanji_to_add.character}".green
-      else
+      kanji_to_add = Kanji.new(character: @prompt.ask("What kanji would you like to add?")&.strip)
+      begin
+        puts "Kanji added: #{kanji_to_add.add!.character}".green
+      rescue ActiveRecord::RecordInvalid
         puts "#{kanji_to_add.character} #{kanji_to_add.errors.first.message}".red
       end
     when SKIP_OPTION
-      kanji_to_skip = @prompt.ask("What kanji would you like to skip?")
-      puts "Kanji skipped: #{Kanji.skip(kanji_to_skip).character}".green
+      kanji_to_skip = Kanji.new(character: @prompt.ask("What kanji would you like to skip?")&.strip)
+      begin
+        puts "Kanji skipped: #{kanji_to_skip.skip!.character}".green
+      rescue ActiveRecord::RecordInvalid
+        puts "#{kanji_to_skip.character} #{kanji_to_skip.errors.first.message}".red
+      end
     when REMOVE_OPTION
-      kanji_to_remove = @prompt.ask("What kanji would you like to remove?")
-      removed_kanji = Kanji.remove(kanji_to_remove)
-      if removed_kanji
-        puts "Removed kanji: #{removed_kanji.character}".yellow
+      character_to_remove = @prompt.ask("What kanji would you like to remove?")&.strip
+      kanji_to_remove = Kanji.find_by(character: character_to_remove)
+      if kanji_to_remove
+        puts "Removed kanji: #{kanji_to_remove.destroy!.character}".yellow
+        $logger.debug("Removed: #{kanji_to_remove.inspect}") if $logger
       else
-        puts "Unable to find kanji character: #{kanji_to_remove.inspect}".red
+        puts "Unable to find kanji character: #{character_to_remove}".red
       end
     end
   end

@@ -6,40 +6,6 @@ class Kanji < ActiveRecord::Base
   validates :character, presence: true, uniqueness: true, format: { with: KANJI_REGEX }
 
   class << self
-    def add(new_kanji)
-      begin
-        new_kanji = Kanji.create!(
-          character: new_kanji&.strip,
-          status: ADDED_STATUS
-        )
-        $logger.debug("Added: #{new_kanji.inspect}") if $logger
-        new_kanji
-      rescue ActiveRecord::RecordInvalid => e
-        e.message
-      end
-    end
-
-    def skip(new_kanji)
-      begin
-        skipped_kanji = Kanji.create!(
-          character: new_kanji&.strip,
-          status: SKIPPED_STATUS
-        )
-        $logger.debug("Skipped: #{skipped_kanji.inspect}") if $logger
-        skipped_kanji
-      rescue ActiveRecord::RecordInvalid => e
-        e.message
-      end
-    end
-
-    def remove(kanji)
-      kanji_to_destroy = Kanji.find_by(character: kanji&.strip)
-      return false unless kanji_to_destroy
-      removed_kanji = kanji_to_destroy.destroy
-      $logger.debug("Removed: #{removed_kanji.inspect}") if $logger
-      removed_kanji
-    end
-
     def next
       next_caracter = remaining_characters.first&.strip
       next_caracter ? new(character: next_caracter) : nil
@@ -69,30 +35,26 @@ class Kanji < ActiveRecord::Base
     def load_from_yaml_dump
       dump = YAML::load(File.open(KANJI_YAML_DUMP_PATH))
       Kanji.destroy_all
-      dump["added_kanji"].each { |kanji| Kanji.add(kanji) }
-      dump["skipped_kanji"].each { |kanji| Kanji.skip(kanji) }
+      dump["added_kanji"].each do |character|
+        Kanji.new(character: character&.strip).add!
+      end
+      dump["skipped_kanji"].each do |character|
+        Kanji.new(character: character&.strip).skip!
+      end
     end
   end
 
   def add!
-    begin
-      self.status = ADDED_STATUS
-      self.save!
-      $logger.debug("Added: #{self.inspect}") if $logger
-      self
-    rescue ActiveRecord::RecordInvalid => e
-      e.message
-    end
+    self.status = ADDED_STATUS
+    self.save!
+    $logger.debug("Added: #{self.inspect}") if $logger
+    self
   end
 
   def skip!
-    begin
-      self.status = SKIPPED_STATUS
-      self.save!
-      $logger.debug("Skipped: #{self.inspect}") if $logger
-      self
-    rescue ActiveRecord::RecordInvalid => e
-      e.message
-    end
+    self.status = SKIPPED_STATUS
+    self.save!
+    $logger.debug("Skipped: #{self.inspect}") if $logger
+    self
   end
 end
