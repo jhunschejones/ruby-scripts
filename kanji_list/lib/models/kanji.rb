@@ -8,7 +8,12 @@ class Kanji < ActiveRecord::Base
   class << self
     def add(new_kanji)
       begin
-        Kanji.create!(character: new_kanji&.strip, status: ADDED_STATUS)
+        new_kanji = Kanji.create!(
+          character: new_kanji&.strip,
+          status: ADDED_STATUS
+        )
+        $logger.debug("Added: #{new_kanji.inspect}") if $logger
+        new_kanji
       rescue ActiveRecord::RecordInvalid => e
         e.message
       end
@@ -16,7 +21,12 @@ class Kanji < ActiveRecord::Base
 
     def skip(new_kanji)
       begin
-        Kanji.create!(character: new_kanji&.strip, status: SKIPPED_STATUS)
+        skipped_kanji = Kanji.create!(
+          character: new_kanji&.strip,
+          status: SKIPPED_STATUS
+        )
+        $logger.debug("Skipped: #{skipped_kanji.inspect}") if $logger
+        skipped_kanji
       rescue ActiveRecord::RecordInvalid => e
         e.message
       end
@@ -68,6 +78,8 @@ class Kanji < ActiveRecord::Base
     begin
       self.status = ADDED_STATUS
       self.save!
+      $logger.debug("Added: #{self.inspect}") if $logger
+      self
     rescue ActiveRecord::RecordInvalid => e
       e.message
     end
@@ -77,6 +89,8 @@ class Kanji < ActiveRecord::Base
     begin
       self.status = SKIPPED_STATUS
       self.save!
+      $logger.debug("Skipped: #{self.inspect}") if $logger
+      self
     rescue ActiveRecord::RecordInvalid => e
       e.message
     end
