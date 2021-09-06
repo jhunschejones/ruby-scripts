@@ -1,6 +1,3 @@
-require "test/unit"
-require_relative "../../lib/module_loader.rb"
-
 Test::Unit.at_start do
   # this setup runs once at the start
   File.write(KANJI_YAML_DUMP_PATH, "added_kanji: ['形']\nskipped_kanji: []")

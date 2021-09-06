@@ -8,3 +8,5 @@ gem 'tty-prompt', '~> 0.22'
 gem 'pry'
 gem 'aws-sdk-s3'
 gem 'aws-sdk-sns'
+
+gem 'mocha'
