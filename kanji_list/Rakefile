@@ -51,4 +51,12 @@ namespace :db do
       client.get_object({ bucket: AWS_BUCKET, key: KANJI_YAML_DUMP_PATH.split("/").last }, target: file)
     end
   end
+
+  desc "Count completed kanji and send to SNS"
+  task :report_totals_to_sns do
+    sns = Aws::SNS::Resource.new(region: "us-east-2")
+    topic = sns.topic("arn:aws:sns:us-east-2:050810144108:kanji-reports-topic")
+    topic.publish({ message: "#{Kanji.added.count} kanjis have been added as of #{Time.now.strftime("%B %d, %Y, %I:%M%P")}" })
+    puts "Kanji report sent!"
+  end
 end

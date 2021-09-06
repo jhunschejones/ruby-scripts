@@ -5,6 +5,8 @@ class Kanji < ActiveRecord::Base
 
   validates :character, presence: true, uniqueness: true, format: { with: KANJI_REGEX }
 
+  scope :added, -> { where(status: ADDED_STATUS) }
+
   class << self
     def next
       next_caracter = remaining_characters.first&.strip

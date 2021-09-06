@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "Generating report..."
+. ./tmp/.env && SCRIPT_ENV=development bundle exec rake db:report_totals_to_sns

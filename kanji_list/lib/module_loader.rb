@@ -3,6 +3,7 @@ require "logger"
 require "tty-prompt"
 require "active_record"
 require "aws-sdk-s3"
+require "aws-sdk-sns"
 require_relative "../db/connection"
 
 Dir["#{File.dirname(__FILE__)}/**/*.rb"].each do |file|
