@@ -41,4 +41,10 @@ class ImageFormatterTest < Test::Unit::TestCase
     ImageFormatter.new(@test_file, :created).process_event
     assert Image.new(@resized_test_file).height == ImageFormatter::TARGET_HEIGHT_PX
   end
+
+  def test_process_event_tinyfies_images_that_are_too_large
+    Tinify.expects(:from_file).once
+    ImageFormatter.new(@test_file, :created).process_event
+    ImageFormatter.new(@resized_test_file, :created).process_event
+  end
 end
