@@ -47,7 +47,7 @@ namespace :db do
 
   desc "Count completed kanji and send to SNS"
   task :report_totals_to_sns do
-    kanji_count_message = "#{Kanji.added.count} kanjis have been added as of #{Time.now.strftime("%B %d, %Y, %I:%M%P")}"
+    kanji_count_message = "#{Kanji.added.count} kanjis have been added with #{Kanji.remaining_characters.size} left to add as of #{Time.now.strftime("%B %d, %Y, %I:%M%P")}"
     Aws::SNS::Resource
       .new(region: ENV["AWS_REGION"])
       .topic("arn:aws:sns:us-east-2:050810144108:kanji-reports-topic")
