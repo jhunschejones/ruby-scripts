@@ -43,7 +43,10 @@ class ImageFormatterTest < Test::Unit::TestCase
   end
 
   def test_process_event_tinyfies_images_that_are_too_large
-    Tinify.expects(:from_file).once
+    mock_tinify_builder = mock()
+    mock_tinify_builder.expects(:to_file).once
+    Tinify.expects(:from_file).once.returns(mock_tinify_builder)
+
     ImageFormatter.new(@test_file, :created).process_event
     ImageFormatter.new(@resized_test_file, :created).process_event
   end
