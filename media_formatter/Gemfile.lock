@@ -14,6 +14,7 @@ GEM
       concurrent-ruby (~> 1.0)
     mini_magick (4.11.0)
     minitest (5.14.4)
+    mocha (1.13.0)
     tinify (1.5.0)
       httpclient (~> 2.6)
     tzinfo (2.0.4)
@@ -27,6 +28,7 @@ DEPENDENCIES
   activesupport
   filewatcher (~> 2.0.0.beta2)
   mini_magick
+  mocha
   tinify
 
 BUNDLED WITH

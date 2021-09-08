@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+ENV["SCRIPT_ENV"] = "test"
+
+require "test/unit"
+require "mocha/test_unit"
+require_relative "../lib/module_loader.rb"
+
+Dir["#{Dir.pwd}/**/*.rb"].each do |file|
+  require(file) if File.basename(file).include?("_test")
+end
