@@ -1,17 +1,3 @@
-require "fileutils"
-
-Test::Unit.at_start do
-  # this setup runs once at the start
-  IMAGE_WATCH_DIRECTORY = "test/fixture_files"
-  BACKUP_IMAGE_FILES_PATH = "test/fixture_files/backups"
-  Dir.mkdir(BACKUP_IMAGE_FILES_PATH)
-end
-
-Test::Unit.at_exit do
-  # this setup runs once at the very end of the test
-  FileUtils.rm_rf(BACKUP_IMAGE_FILES_PATH)
-end
-
 class ImageFormatterTest < Test::Unit::TestCase
 
   def setup
@@ -19,7 +5,8 @@ class ImageFormatterTest < Test::Unit::TestCase
     IO.any_instance.stubs(:puts)
 
     @test_file = "test/fixture_files/goats_in_action_test.jpeg"
-    @resized_test_file = "test/fixture_files/goats_in_action_test_resized.jpeg"
+    @resized_test_file = "test/fixture_files/goats_in_action_test#{ImageFileName::RESIZED_SUFFIX}.jpeg"
+    @backed_up_test_file = "test/fixture_files/backups/goats_in_action_test.jpeg"
     FileUtils.cp("test/fixture_files/goats_in_action.jpeg", @test_file)
   end
 
@@ -31,14 +18,15 @@ class ImageFormatterTest < Test::Unit::TestCase
     File.delete(@resized_test_file) if File.exist?(@resized_test_file)
   end
 
-  def test_process_event_backs_up_origional_image
+  def test_process_event_backs_up_the_origional_image
     ImageFormatter.new(@test_file, :created).process_event
-    assert File.exists?(@resized_test_file)
+    assert File.exists?(@backed_up_test_file)
   end
 
   def test_process_event_resizes_images_that_are_too_tall
     refute Image.new(@test_file).height == ImageFormatter::TARGET_HEIGHT_PX
     ImageFormatter.new(@test_file, :created).process_event
+    assert File.exists?(@resized_test_file)
     assert Image.new(@resized_test_file).height == ImageFormatter::TARGET_HEIGHT_PX
   end
 
@@ -49,5 +37,19 @@ class ImageFormatterTest < Test::Unit::TestCase
 
     ImageFormatter.new(@test_file, :created).process_event
     ImageFormatter.new(@resized_test_file, :created).process_event
+  end
+
+  def test_process_event_does_not_modify_images_that_are_already_the_right_size
+    unprocessed_small_test_file = "test/fixture_files/goat_at_rest.jpeg"
+    resized_small_test_file = "test/fixture_files/goat_at_rest#{ImageFileName::RESIZED_SUFFIX}.jpeg"
+    tinified_small_test_file = "test/fixture_files/goat_at_rest#{ImageFileName::TINYIFIED_IMAGE_SUFFIX}.jpeg"
+    backed_up_small_test_file = "test/fixture_files/backups/goat_at_rest.jpeg"
+
+    ImageFormatter.new(unprocessed_small_test_file, :created).process_event
+
+    assert File.exists?(unprocessed_small_test_file)
+    refute File.exists?(resized_small_test_file)
+    refute File.exists?(tinified_small_test_file)
+    refute File.exists?(backed_up_small_test_file)
   end
 end
