@@ -3,12 +3,12 @@ module AudioFileName
 
   protected
 
-  def processed_filename
+  def processed_file_name
     "#{AUDIO_DEPOSIT_DIRECTORY}/#{base_filename}#{processed_suffix}.mp3"
   end
 
-  def safe_processed_filename
-    return processed_filename unless File.exist?(processed_filename)
+  def safe_processed_file_name
+    return processed_file_name unless File.exist?(processed_file_name)
     "#{AUDIO_DEPOSIT_DIRECTORY}/#{base_filename}_#{SecureRandom.uuid}#{processed_suffix}.mp3"
   end
 
@@ -22,10 +22,7 @@ module AudioFileName
   end
 
   def cli_safe_file_name
-    # Just remove special characters that could cause problems
-    "#{AUDIO_WATCH_DIRECTORY}/#{base_filename.gsub(SPECIAL_CHARACTERS, '').strip}#{file_extension}"
-    # Smash the name into a conservative string, only works with english characters
-    # "#{AUDIO_WATCH_DIRECTORY}/#{base_filename.parameterize.underscore}#{file_extension}"
+    "#{AUDIO_WATCH_DIRECTORY}/#{base_filename.gsub(SPECIAL_CHARACTERS, "").split.join("_").downcase}#{file_extension}"
   end
 
   def processed_suffix
