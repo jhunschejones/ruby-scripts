@@ -44,4 +44,8 @@ module ImageFileName
   def file_extension
     File.extname(filename)
   end
+
+  def filename
+    raise NotImplementedError
+  end
 end
