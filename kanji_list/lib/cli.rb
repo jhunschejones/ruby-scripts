@@ -55,7 +55,7 @@ class CLI
     system("echo #{next_kanji.character} | tr -d '\n' | pbcopy")
 
     case @prompt.select(
-      "Next kanji: #{next_kanji.character.cyan}",
+      "Next kanji: #{next_kanji.character.cyan}, from #{Word.find_by(kanji: next_kanji)}",
       open_urls ? NEXT_KANJI_OPTIONS : NEXT_KANJI_OPTIONS.dup - ["Open URLs"],
       filter: true,
       cycle: true
