@@ -1,15 +1,3 @@
-require "rake"
-require "fileutils"
-
-Test::Unit.at_start do
-  load "lib/tasks/db.rake"
-  Rake::Task.define_task(:environment)
-end
-
-Test::Unit.at_exit do
-  # this setup runs once at the very end of the test
-end
-
 class RakeTest < Test::Unit::TestCase
 
   def setup
