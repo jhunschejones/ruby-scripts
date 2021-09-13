@@ -15,7 +15,8 @@ class Kanji < ActiveRecord::Base
 
     def remaining_characters
       previous_characters = Kanji.pluck(:character)
-      new_characters = YAML::load(File.open(WORD_LIST_YAML_PATH))[WORD_LIST_KEY]
+      new_characters = Word
+        .all
         .flat_map { |word| word.split("") }
         .uniq
         .select { |kanji| kanji =~ KANJI_REGEX }
