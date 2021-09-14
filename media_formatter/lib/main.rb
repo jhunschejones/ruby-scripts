@@ -25,16 +25,10 @@ filewatcher = Filewatcher.new(
   interval: 0
 )
 
+# == Setup and start a file processing queue ==
+async_file_processor = AsyncFileProcessor.new.run
+
 # == Run file watcher loop ==
 filewatcher.watch do |watcher_event|
-  filename, event = watcher_event.to_a.first
-  image_formatter = ImageFormatter.new(filename, event)
-  audio_processor = AudioProcessor.new(filename, event)
-  if image_formatter.should_process_event?
-    Thread.new { image_formatter.process_event }
-  elsif audio_processor.should_process_event?
-    Thread.new { audio_processor.process_event }
-  else
-    puts "Skipping #{event} event for #{filename}"
-  end
+  async_file_processor.enqueue(watcher_event.to_a.first)
 end
