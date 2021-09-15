@@ -2,7 +2,7 @@ class AsyncFileProcessor
   FILE_PROCESSING_INTERVAL_SECONDS = 0.5.freeze
 
   def initialize
-    @files_to_process = []
+    @files_to_process = Queue.new
   end
 
   def enqueue(file_to_process)
