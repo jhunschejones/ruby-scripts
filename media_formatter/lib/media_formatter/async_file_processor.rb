@@ -1,8 +1,9 @@
 class AsyncFileProcessor
-  FILE_PROCESSING_INTERVAL_SECONDS = 0.5.freeze
+  DEFAULT_FILE_PROCESSING_INTERVAL_SECONDS = 0.25.freeze
 
-  def initialize
+  def initialize(interval: DEFAULT_FILE_PROCESSING_INTERVAL_SECONDS)
     @files_to_process = Queue.new
+    @interval = interval
   end
 
   def enqueue(file_to_process)
@@ -13,7 +14,7 @@ class AsyncFileProcessor
     Thread.new do
       loop do
         process(*@files_to_process.shift) unless @files_to_process.size.zero?
-        sleep FILE_PROCESSING_INTERVAL_SECONDS
+        sleep @interval
       end
     end
     self # returning self to make this method chain-able
