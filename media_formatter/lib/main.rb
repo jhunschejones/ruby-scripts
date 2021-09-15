@@ -26,9 +26,15 @@ filewatcher = Filewatcher.new(
 )
 
 # == Setup and start a file processing queue ==
-async_file_processor = AsyncFileProcessor.new.run
+file_event_processor = FileEventProcessor.new.run
 
 # == Run file watcher loop ==
 filewatcher.watch do |watcher_event|
-  async_file_processor.enqueue(watcher_event.to_a.first)
+  file_event_processor.enqueue(
+    watcher_event
+      .to_a
+      # Sometimes the watcher sees a list of events, sometimes just one.
+      # This makes sure we're always passing a flat array of all events.
+      .flat_map { |watcher_event| FileEvent.new(*watcher_event) }
+  )
 end
