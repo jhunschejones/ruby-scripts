@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+Dir["#{Dir.pwd}/test/**/*.rb"].each do |file|
+  require(file) if File.basename(file).include?("_test")
+end
