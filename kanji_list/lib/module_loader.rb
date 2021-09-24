@@ -8,7 +8,7 @@ require "aws-sdk-sns"
 require_relative "../db/connection"
 
 Dir["#{File.dirname(__FILE__)}/**/*.rb"].each do |file|
-  require(file) unless File.basename(file) == 'main.rb'
+  require(file) unless File.basename(file) == "main.rb"
 end
 
 ActiveRecord::Base.logger = Logger.new(STDOUT) if ENV["LOG_QUERIES"]
@@ -30,5 +30,6 @@ end
 
 File.write(WORD_LIST_YAML_PATH, "#{WORD_LIST_KEY}: []") unless File.exist?(WORD_LIST_YAML_PATH)
 
+# Make the rake tasks availibile for the CLI and for unit tests
 load "lib/tasks/db.rake"
 Rake::Task.define_task(:environment)

@@ -13,7 +13,7 @@ class CLI
     ADD_OPTION = "Add kanji (freeform)",
     SKIP_OPTION = "Skip kanji (freeform)",
     REMOVE_OPTION = "Remove kanji (freeform)",
-    BACK_OPTION = "Back".freeze
+    BACK_OPTION = "Back"
   ].freeze
 
   def initialize
