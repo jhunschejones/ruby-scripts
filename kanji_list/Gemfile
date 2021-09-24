@@ -1,12 +1,12 @@
 source 'https://rubygems.org'
 
-gem 'activerecord', '~> 6.0', '>= 6.0.3.4'
+gem 'activerecord'
 gem 'sinatra-activerecord' # For adding custom rake db:* commands easily
-gem 'sqlite3', '~> 1.4'
+gem 'sqlite3'
 gem 'rake'
-gem 'tty-prompt', '~> 0.22'
-gem 'pry'
+gem 'tty-prompt'
 gem 'aws-sdk-s3'
 gem 'aws-sdk-sns'
 
+gem 'pry'
 gem 'mocha'
