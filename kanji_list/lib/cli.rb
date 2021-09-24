@@ -17,6 +17,7 @@ class CLI
   def initialize
     @prompt = TTY::Prompt.new(
       interrupt: Proc.new do
+        Rake::Task["db:upload_to_s3"].invoke
         puts "\n#{total_kanji_added_message}"
         exit 0
       end,
@@ -40,6 +41,7 @@ class CLI
       when ADVANCED_OPTION
         advanced_menu
       when QUIT_OPTION
+        Rake::Task["db:upload_to_s3"].invoke
         puts total_kanji_added_message
         exit 0
       end

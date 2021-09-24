@@ -1,5 +1,6 @@
 require "yaml"
 require "logger"
+require "rake"
 require "tty-prompt"
 require "active_record"
 require "aws-sdk-s3"
@@ -28,3 +29,6 @@ else
 end
 
 File.write(WORD_LIST_YAML_PATH, "#{WORD_LIST_KEY}: []") unless File.exist?(WORD_LIST_YAML_PATH)
+
+load "lib/tasks/db.rake"
+Rake::Task.define_task(:environment)
