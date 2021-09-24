@@ -1,4 +1,6 @@
 class CLI
+  class ManualInterrupt < StandardError; end
+
   MENU_OPTIONS = [
     SHOW_NEXT_CHARACTER_OPTION = "Next character from word list",
     ADD_TO_WORD_LIST_OPTION = "Add new words to word list",
@@ -17,9 +19,8 @@ class CLI
   def initialize
     @prompt = TTY::Prompt.new(
       interrupt: Proc.new do
-        Rake::Task["db:upload_to_s3"].invoke
         puts "\n#{total_kanji_added_message}"
-        exit 0
+        raise ManualInterrupt
       end,
       active_color: :green,
       track_history: false
@@ -41,9 +42,8 @@ class CLI
       when ADVANCED_OPTION
         advanced_menu
       when QUIT_OPTION
-        Rake::Task["db:upload_to_s3"].invoke
         puts total_kanji_added_message
-        exit 0
+        raise ManualInterrupt
       end
     end
   end
