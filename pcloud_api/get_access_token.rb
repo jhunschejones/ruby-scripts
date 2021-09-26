@@ -17,12 +17,12 @@ ACCESS_CODE = $stdin.gets.chomp.freeze
 puts "5. Requesting access token from pCloud...".cyan
 
 response = HTTParty.post(
-  "https://api.pcloud.com/oauth2_token",
+  "https://#{Pcloud::Api::EU_API_BASE}/oauth2_token",
   query: { client_id: CLIENT_ID, client_secret: CLIENT_SECRET, code: ACCESS_CODE }
 )
 
 puts "6. Writing access token to #{ACCESS_TOKEN_PATH}...".cyan
 
-File.write(ACCESS_TOKEN_PATH, JSON.parse(response.body)["access_token"], mode: "a")
+File.write(ACCESS_TOKEN_PATH, JSON.parse(response.body)["access_token"], mode: "w+")
 
 puts "Done!".green

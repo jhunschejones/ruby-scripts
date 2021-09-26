@@ -14,7 +14,7 @@ module Pcloud
       @download_url ||= begin
         file_url_parts = Api.execute(
           "getfilelink",
-          query: { fileid: @id, forcedownload: 1, skipfilename: 1 }
+          query: { fileid: id, forcedownload: 1, skipfilename: 1 }
         )
         "https://#{file_url_parts["hosts"].first}#{file_url_parts["path"]}"
       end
@@ -27,7 +27,7 @@ module Pcloud
     def download_to(local_file_path:)
       ::File.open(local_file_path, "w") do |file|
         file.binmode
-        print "Saving your file..."
+        print "Saving your file.."
         HTTParty.get(download_url, stream_body: true) do |fragment|
           file.write(fragment)
           print "."
@@ -39,19 +39,25 @@ module Pcloud
 
     def update(name:)
       Pcloud::File.parse_one(
-        Api.execute("renamefile", query: { fileid: @id, toname: name })
+        Api.execute("renamefile", query: { fileid: id, toname: name })
+      )
+    end
+
+    def move_to(folder_id:)
+      Pcloud::File.parse_one(
+        Api.execute("renamefile", query: { fileid: id, tofolderid: folder_id, toname: name })
       )
     end
 
     def delete
       Pcloud::File.parse_one(
-        Api.execute("deletefile", query: { fileid: @id })
+        Api.execute("deletefile", query: { fileid: id })
       )
     end
 
     def parent_folder
-      # NOTE: This is safe to cache for now because support for moving files
-      #       has not been added yet.
+      # This is safe to cache with the current implemenatation since the `move_to`
+      # method returns an enierly new instance with updated attributes.
       @parent_folder ||= Pcloud::Folder.find(parent_folder_id)
     end
 
@@ -64,17 +70,20 @@ module Pcloud
         parse_one(Api.execute("stat", query: { fileid: id }))
       end
 
-      def upload(path:, filename:, file:)
+      def upload(filename:, file:, path: nil, folder_id: nil)
+        # If neither `path` nor `folder_id` is provided, the file will be
+        # uploaded into the users root directory by default.
         response = Api.execute(
           "uploadfile",
           body: {
             renameifexists: 1,
             path: path,
+            folderid: folder_id,
             filename: filename,
             file: file
-          },
+          }.compact,
         )
-        parse_many(response)
+        parse_many(response).first
       end
 
       def parse_one(response)

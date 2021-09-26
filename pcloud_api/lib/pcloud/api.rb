@@ -1,11 +1,12 @@
 module Pcloud
   class Api
     class Error < StandardError; end
+    US_API_BASE = "api.pcloud.com".freeze
+    EU_API_BASE = "eapi.pcloud.com".freeze
+    ACCESS_TOKEN = ::File.read(ACCESS_TOKEN_PATH).freeze
+    TIMEOUT_SECONDS = 8.freeze
 
     class << self
-      ACCESS_TOKEN = ::File.read(ACCESS_TOKEN_PATH).freeze
-      TIMEOUT_SECONDS = 8.freeze
-
       # NOTE: no need to URI.encode_www_form_component params when using the "query"
       #       argument in HTTParty, the library does it for you for free!
       # NOTE: HTTParty sets multipart: true automatically, which is required for file uploads
@@ -19,7 +20,7 @@ module Pcloud
         options.merge!({ body: body }) unless body.empty?
         response =
           show_method_progress do
-            HTTParty.public_send(verb, "https://api.pcloud.com/#{method}", options)
+            HTTParty.public_send(verb, "https://#{closest_server}/#{method}", options)
           end
         response = JSON.parse(response.body)
         raise Error.new(response["error"]) if response["error"]
@@ -28,11 +29,17 @@ module Pcloud
 
       private
 
+      def closest_server
+        @@closest_server ||= begin
+          HTTParty.get("https://#{US_API_BASE}/getapiserver")["api"].first
+        end
+      end
+
       def show_method_progress
         progress_thread = Thread.new do
           Thread.current[:has_entered_loop] = false
           sleep 2
-          print "Sending request to pCloud..."
+          print "Sending request to pCloud.."
           loop do
             Thread.current[:has_entered_loop] = true
             sleep 1
