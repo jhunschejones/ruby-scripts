@@ -5,6 +5,7 @@ require "tty-prompt"
 require "active_record"
 require "aws-sdk-s3"
 require "aws-sdk-sns"
+require "pcloud_api"
 require_relative "../db/connection"
 
 Dir["#{File.dirname(__FILE__)}/**/*.rb"].each do |file|
@@ -27,6 +28,11 @@ elsif ENV["SCRIPT_ENV"] == "test"
 else
   raise "Unrecognized environment '#{ENV["SCRIPT_ENV"]}'"
 end
+
+# Pcloud::Client.configure(
+# 	access_token: ENV["PCLOUD_API_ACCESS_TOKEN"],
+# 	data_region: "EU"
+# )
 
 File.write(WORD_LIST_YAML_PATH, "#{WORD_LIST_KEY}: []") unless File.exist?(WORD_LIST_YAML_PATH)
 
