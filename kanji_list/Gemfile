@@ -11,4 +11,4 @@ gem 'aws-sdk-sns'
 gem 'pry'
 gem 'mocha'
 
-gem 'pcloud_api', path: '/Users/joshua/Documents/GitHub/pcloud_api/'
+gem 'pcloud_api'
