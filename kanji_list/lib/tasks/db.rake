@@ -1,3 +1,5 @@
+PCLOUD_STATE_FILE_REGEX = /(^.+\.yml$)|(^.+\.db$)/.freeze
+
 namespace :db do
   desc "Dump the database to a yaml file"
   task :dump_to_yaml do
@@ -43,6 +45,57 @@ namespace :db do
     File.open("./#{KANJI_YAML_DUMP_PATH}", "wb") do |file|
       client.get_object({ bucket: AWS_BUCKET, key: KANJI_YAML_DUMP_PATH.split("/").last }, target: file)
     end
+  end
+
+  desc "Upload state files to pCloud"
+  task :upload_to_pcloud do
+    Rake::Task["db:dump_to_yaml"].invoke
+
+    # === Archive old files already in pCloud
+    # NOTE: This will overwrite existing archive files for each day such that
+    #       there is only ever one pair of archive files stored per day.
+    Pcloud::Folder.find(KANJI_LIST_PCLOUD_FOLDER_ID)
+      .contents
+      .filter { |item| item.is_a?(Pcloud::File) }
+      .filter { |file| file.name.match?(PCLOUD_STATE_FILE_REGEX) }
+      .each do |file|
+        file.update(
+          name: "#{Time.parse(file.created_at).strftime("%Y_%m_%d")}_#{file.name}",
+          parent_folder_id: KANJI_LIST_PCLOUD_ARCHIVE_FOLDER_ID
+        )
+      end
+
+    # === Upload new state files
+    puts "Uploading #{KANJI_YAML_DUMP_PATH.split("/").last} to pCloud...".yellow
+    Pcloud::File.upload(
+      folder_id: KANJI_LIST_PCLOUD_FOLDER_ID,
+      filename: KANJI_YAML_DUMP_PATH.split("/").last,
+      file: File.open("./#{KANJI_YAML_DUMP_PATH}")
+    )
+
+    puts "Uploading #{LOCAL_DB_FILENAME} to pCloud...".yellow
+    Pcloud::File.upload(
+      folder_id: KANJI_LIST_PCLOUD_FOLDER_ID,
+      filename: LOCAL_DB_FILENAME,
+      file: File.open("./#{LOCAL_DB_FILENAME}")
+    )
+  end
+
+  desc "Download state files from pCloud"
+  task :download_from_pcloud do
+    Pcloud::Folder.find(KANJI_LIST_PCLOUD_FOLDER_ID)
+      .contents
+      .filter { |item| item.is_a?(Pcloud::File) }
+      .filter { |file| file.name.match?(PCLOUD_STATE_FILE_REGEX) }
+      .each do |state_file|
+        ::File.open("./db/#{state_file.name}", "w") do |file|
+          file.binmode
+          puts "Downloading #{state_file.name} from pCloud...".yellow
+          HTTParty.get(state_file.download_url, stream_body: true) do |fragment|
+            file.write(fragment)
+          end
+        end
+      end
   end
 
   desc "Count completed kanji and send to SNS"

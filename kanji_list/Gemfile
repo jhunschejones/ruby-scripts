@@ -10,3 +10,5 @@ gem 'aws-sdk-sns'
 
 gem 'pry'
 gem 'mocha'
+
+gem 'pcloud_api'

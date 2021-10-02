@@ -14,7 +14,7 @@ Most of the screens in the CLI are searchable if you begin typing the name of a 
 
 The Rakefile includes a couple custom commands to dump the local database to a yaml file or to re-create the database from a yaml file. These can be used for easy backup and restore processes that are less dependent on the DB structure for the project.
 
-For longer term storage, there are also rake commands for backing up and restoring from S3. To use these commands, you will first need to export `AWS_REGION`, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables for the AWS SDK. Then you can either set up your AWS resources to match the naming in the script or adjust the script to match your AWS resource names!
+For longer term storage, the app will store and restore state in pCloud. To use this functionality you will need to export `PCLOUD_API_DATA_REGION`, `PCLOUD_API_ACCESS_TOKEN`, `KANJI_LIST_PCLOUD_FOLDER_ID`, and `KANJI_LIST_PCLOUD_ARCHIVE_FOLDER_ID` environment variables for the `pcloud_api` client.
 
 *NOTE: The `./bin/run` command includes an auto-timeout that closes the script after 90 minutes (since I often forget to stop it after I'm done.)
 

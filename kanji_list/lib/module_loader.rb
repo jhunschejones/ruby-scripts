@@ -5,16 +5,16 @@ require "tty-prompt"
 require "active_record"
 require "aws-sdk-s3"
 require "aws-sdk-sns"
-require_relative "../db/connection"
+require "pcloud_api"
 
 Dir["#{File.dirname(__FILE__)}/**/*.rb"].each do |file|
   require(file) unless File.basename(file) == "main.rb"
 end
 
-ActiveRecord::Base.logger = Logger.new(STDOUT) if ENV["LOG_QUERIES"]
-$logger = Logger.new("tmp/log.txt") unless ENV["SCRIPT_ENV"] == "test"
-
 WORD_LIST_KEY = "new_words".freeze
+LOCAL_DB_FILENAME = YAML::load(File.open("config/database.yml")).fetch(ENV["SCRIPT_ENV"])["database"]
+KANJI_LIST_PCLOUD_FOLDER_ID = ENV["KANJI_LIST_PCLOUD_FOLDER_ID"].to_i
+KANJI_LIST_PCLOUD_ARCHIVE_FOLDER_ID = ENV["KANJI_LIST_PCLOUD_ARCHIVE_FOLDER_ID"].to_i
 
 if ENV["SCRIPT_ENV"] == "development"
   WORD_LIST_YAML_PATH = "config/word_list.yml".freeze
@@ -28,8 +28,16 @@ else
   raise "Unrecognized environment '#{ENV["SCRIPT_ENV"]}'"
 end
 
-File.write(WORD_LIST_YAML_PATH, "#{WORD_LIST_KEY}: []") unless File.exist?(WORD_LIST_YAML_PATH)
-
-# Make the rake tasks availibile for the CLI and for unit tests
+# Make rake tasks availibile for the CLI and unit tests
 load "lib/tasks/db.rake"
 Rake::Task.define_task(:environment)
+
+# Load state from pcloud before connecting to the database
+if ENV["SCRIPT_ENV"] != "test" && ENV["KANJI_LIST_PCLOUD_FOLDER_ID"]
+  Rake::Task["db:download_from_pcloud"].invoke
+end
+require_relative "../db/connection"
+ActiveRecord::Base.logger = Logger.new(STDOUT) if ENV["LOG_QUERIES"]
+$logger = Logger.new("tmp/log.txt") unless ENV["SCRIPT_ENV"] == "test"
+
+File.write(WORD_LIST_YAML_PATH, "#{WORD_LIST_KEY}: []") unless File.exist?(WORD_LIST_YAML_PATH)
