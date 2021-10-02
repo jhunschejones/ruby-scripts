@@ -1,5 +1,3 @@
-PCLOUD_STATE_FILE_REGEX = /(^.+\.yml$)|(^.+\.db$)/.freeze
-
 namespace :db do
   desc "Dump the database to a yaml file"
   task :dump_to_yaml do
@@ -88,9 +86,21 @@ namespace :db do
       .filter { |item| item.is_a?(Pcloud::File) }
       .filter { |file| file.name.match?(PCLOUD_STATE_FILE_REGEX) }
       .each do |state_file|
-        ::File.open("./db/#{state_file.name}", "w") do |file|
+        filename = "./db/#{state_file.name}"
+        # prompt if local file is newer than cloud state file
+        if ::File.exist?(filename) && ::File.ctime(filename) > Time.parse(state_file.created_at)
+          puts "Local #{filename} is newer than the version in pCloud. Are you sure you want to overwrite the local file with an older copy? [Y/N]".red
+          print "> ".red
+          unless ["yes", "y"].include?($stdin.gets.chomp.downcase)
+            puts "Skipping download of #{filename}...".yellow
+            next
+          end
+        end
+        # Only proceed with file download after confirmation or if cloud file is
+        # not older than local file.
+        ::File.open(filename, "w") do |file|
           file.binmode
-          puts "Downloading #{state_file.name} from pCloud...".yellow
+          puts "Downloading #{filename} from pCloud...".yellow
           HTTParty.get(state_file.download_url, stream_body: true) do |fragment|
             file.write(fragment)
           end

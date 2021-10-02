@@ -1,5 +1,4 @@
 class CLI
-  class ManualInterrupt < StandardError; end
 
   MENU_OPTIONS = [
     SHOW_NEXT_CHARACTER_OPTION = "Next character from word list",
@@ -20,7 +19,7 @@ class CLI
     @prompt = TTY::Prompt.new(
       interrupt: Proc.new do
         puts "\n#{total_kanji_added_message}"
-        raise ManualInterrupt
+        exit 0
       end,
       active_color: :green,
       track_history: false
@@ -43,7 +42,7 @@ class CLI
         advanced_menu
       when QUIT_OPTION
         puts total_kanji_added_message
-        raise ManualInterrupt
+        exit 0
       end
     end
   end

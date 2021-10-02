@@ -1,3 +1,11 @@
 #!/bin/bash
 
+if [ $KANJI_LIST_PCLOUD_FOLDER_ID ]; then
+  SCRIPT_ENV=development RAKE_ENV=development bundle exec rake db:download_from_pcloud
+fi
+
 . ./tmp/.env && clear && SCRIPT_ENV=development gtimeout --foreground 90m bundle exec ruby lib/main.rb
+
+if [ $KANJI_LIST_PCLOUD_FOLDER_ID ]; then
+  SCRIPT_ENV=development RAKE_ENV=development bundle exec rake db:upload_to_pcloud
+fi
