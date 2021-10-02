@@ -52,6 +52,8 @@ namespace :db do
     Rake::Task["db:dump_to_yaml"].invoke
 
     # === Archive old files already in pCloud
+    # NOTE: This will overwrite existing archive files for each day such that
+    #       there is only ever one pair of archive files stored per day.
     Pcloud::Folder.find(KANJI_LIST_PCLOUD_FOLDER_ID)
       .contents
       .filter { |item| item.is_a?(Pcloud::File) }
@@ -65,14 +67,14 @@ namespace :db do
 
     # === Upload new state files
     puts "Uploading #{KANJI_YAML_DUMP_PATH.split("/").last} to pCloud...".yellow
-    Pcloud::File.upload!(
+    Pcloud::File.upload(
       folder_id: KANJI_LIST_PCLOUD_FOLDER_ID,
       filename: KANJI_YAML_DUMP_PATH.split("/").last,
       file: File.open("./#{KANJI_YAML_DUMP_PATH}")
     )
 
     puts "Uploading #{LOCAL_DB_FILENAME} to pCloud...".yellow
-    Pcloud::File.upload!(
+    Pcloud::File.upload(
       folder_id: KANJI_LIST_PCLOUD_FOLDER_ID,
       filename: LOCAL_DB_FILENAME,
       file: File.open("./#{LOCAL_DB_FILENAME}")

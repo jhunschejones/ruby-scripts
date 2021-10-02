@@ -2,6 +2,8 @@
 
 ENV["SCRIPT_ENV"] = "test"
 ENV["RACK_ENV"] = "test"
+ENV["PCLOUD_API_DATA_REGION"] = "EU"
+ENV["PCLOUD_API_ACCESS_TOKEN"] = "test-token" # Not used in tests
 
 require "test/unit"
 require "mocha/test_unit"

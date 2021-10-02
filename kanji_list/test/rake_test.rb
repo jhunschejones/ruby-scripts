@@ -3,11 +3,17 @@ class RakeTest < Test::Unit::TestCase
   def setup
     # this setup runs before each test
     IO.any_instance.stubs(:puts)
+    Pcloud::File.stubs(:upload!).returns(true)
+    @mock_folder = mock()
+    @mock_folder.stubs(:contents).returns([])
+    Pcloud::Folder.stubs(:find).returns(@mock_folder)
   end
 
   def teardown
     # this teardown runs after each test
     IO.any_instance.unstub(:puts)
+    Pcloud::File.unstub(:upload!)
+    Pcloud::Folder.unstub(:find)
   end
 
   def test_upload_to_s3_dumps_db_yaml_and_uploads_two_files
@@ -41,5 +47,20 @@ class RakeTest < Test::Unit::TestCase
     Aws::SNS::Resource.expects(:new).returns(resource_stub)
 
     Rake::Task["db:report_totals_to_sns"].invoke
+  end
+
+  def test_upload_to_pcloud_dumps_db_yaml_and_uploads_two_files
+    Pcloud::File.expects(:upload!).times(2)
+    Rake::Task["db:dump_to_yaml"].expects(:invoke).once
+    Rake::Task["db:upload_to_pcloud"].invoke
+  end
+
+  def test_download_from_pcloud_looks_up_the_pcloud_state_folder
+    Pcloud::Folder
+      .expects(:find)
+      .with(KANJI_LIST_PCLOUD_FOLDER_ID)
+      .returns(@mock_folder)
+      .once
+    Rake::Task["db:download_from_pcloud"].invoke
   end
 end
