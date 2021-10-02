@@ -50,7 +50,7 @@ class RakeTest < Test::Unit::TestCase
   end
 
   def test_upload_to_pcloud_dumps_db_yaml_and_uploads_two_files
-    Pcloud::File.expects(:upload!).times(2)
+    Pcloud::File.expects(:upload).times(2)
     Rake::Task["db:dump_to_yaml"].expects(:invoke).once
     Rake::Task["db:upload_to_pcloud"].invoke
   end

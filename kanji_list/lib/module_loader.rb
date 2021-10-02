@@ -33,7 +33,9 @@ load "lib/tasks/db.rake"
 Rake::Task.define_task(:environment)
 
 # Load state from pcloud before connecting to the database
-Rake::Task["db:download_from_pcloud"].invoke unless ENV["SCRIPT_ENV"] == "test"
+if ENV["SCRIPT_ENV"] != "test" && ENV["KANJI_LIST_PCLOUD_FOLDER_ID"]
+  Rake::Task["db:download_from_pcloud"].invoke
+end
 require_relative "../db/connection"
 ActiveRecord::Base.logger = Logger.new(STDOUT) if ENV["LOG_QUERIES"]
 $logger = Logger.new("tmp/log.txt") unless ENV["SCRIPT_ENV"] == "test"
