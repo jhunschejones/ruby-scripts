@@ -58,7 +58,7 @@ namespace :db do
       .filter { |file| file.name.match?(PCLOUD_STATE_FILE_REGEX) }
       .each do |file|
         file.update(
-          name: "#{Time.parse(file.created_at).strftime("%Y_%m_%d")}_#{file.name}",
+          name: "#{file.created_at.strftime("%Y_%m_%d")}_#{file.name}",
           parent_folder_id: KANJI_LIST_PCLOUD_ARCHIVE_FOLDER_ID
         )
       end
@@ -88,7 +88,7 @@ namespace :db do
       .each do |state_file|
         filename = "./db/#{state_file.name}"
         # prompt if local file is newer than cloud state file
-        if ::File.exist?(filename) && ::File.ctime(filename) > Time.parse(state_file.created_at)
+        if ::File.exist?(filename) && ::File.ctime(filename) > state_file.created_at
           puts "Local #{filename} is newer than the version in pCloud. Are you sure you want to overwrite the local file with an older copy? [Y/N]".red
           print "> ".red
           unless ["yes", "y"].include?($stdin.gets.chomp.downcase)
