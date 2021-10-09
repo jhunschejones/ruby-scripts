@@ -50,7 +50,7 @@ GEM
       ruby2_keywords (~> 0.0.1)
     pastel (0.8.0)
       tty-color (~> 0.5)
-    pcloud_api (0.2.0)
+    pcloud_api (0.2.1)
       httparty (~> 0.16)
       tzinfo
     pry (0.14.1)
