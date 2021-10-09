@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+ENV["AUDIO_OUTPUT_FOLDER"] = "./test"
+
+Dir["#{Dir.pwd}/test/**/*.rb"].each do |file|
+  require(file) if File.basename(file).include?("_test")
+end
