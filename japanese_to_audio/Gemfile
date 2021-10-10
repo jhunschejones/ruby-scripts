@@ -3,8 +3,9 @@ source 'https://rubygems.org'
 ruby '3.0.2'
 
 gem 'aws-sdk-polly'
-gem 'nokogiri' # Ruby 3.x warning, AWS gem requires xml parser not noted in their dependencies
 
 gem 'test-unit'
+gem 'vcr'
+gem 'webmock'
 gem 'mocha'
 gem 'pry'
