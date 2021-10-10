@@ -17,9 +17,12 @@ GEM
     mini_magick (4.11.0)
     minitest (5.14.4)
     mocha (1.13.0)
+    power_assert (2.0.1)
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    test-unit (3.4.7)
+      power_assert
     tinify (1.5.1)
       httpclient (~> 2.6)
     tzinfo (2.0.4)
@@ -35,10 +38,11 @@ DEPENDENCIES
   mini_magick
   mocha
   pry
+  test-unit
   tinify
 
 RUBY VERSION
-  ruby 3.0.2p107
+   ruby 3.0.2p107
 
 BUNDLED WITH
-  2.2.29
+   2.2.29

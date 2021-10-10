@@ -20,13 +20,13 @@ class ImageFormatterTest < Test::Unit::TestCase
 
   def test_process_event_backs_up_the_origional_image
     ImageFormatter.new(@test_file, :created).process_event
-    assert File.exists?(@backed_up_test_file)
+    assert File.exist?(@backed_up_test_file)
   end
 
   def test_process_event_resizes_images_that_are_too_tall
     refute Image.new(@test_file).height == ImageFormatter::TARGET_HEIGHT_PX
     ImageFormatter.new(@test_file, :created).process_event
-    assert File.exists?(@resized_test_file)
+    assert File.exist?(@resized_test_file)
     assert Image.new(@resized_test_file).height == ImageFormatter::TARGET_HEIGHT_PX
   end
 
@@ -47,9 +47,9 @@ class ImageFormatterTest < Test::Unit::TestCase
 
     ImageFormatter.new(unprocessed_small_test_file, :created).process_event
 
-    assert File.exists?(unprocessed_small_test_file)
-    refute File.exists?(resized_small_test_file)
-    refute File.exists?(tinified_small_test_file)
-    refute File.exists?(backed_up_small_test_file)
+    assert File.exist?(unprocessed_small_test_file)
+    refute File.exist?(resized_small_test_file)
+    refute File.exist?(tinified_small_test_file)
+    refute File.exist?(backed_up_small_test_file)
   end
 end

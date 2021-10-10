@@ -24,7 +24,7 @@ jobs:
         ruby-version: '3.0.2'
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Run tests
-      run: echo tests running in $PWD # ./bin/test 
+      run: bundle exec ./bin/test
 
   test_media_formatter:
     name: Media Formatter Unit Tests
@@ -41,8 +41,8 @@ jobs:
         ruby-version: '3.0.2'
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Run tests
-      run: echo tests running in $PWD # ./bin/test 
-      
+      run: bundle exec ./bin/test
+
   test_japanese_to_audio:
     name: Japanese To Audio Unit Tests
     runs-on: macos-10.15
@@ -58,4 +58,4 @@ jobs:
         ruby-version: '3.0.2'
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Run tests
-      run: echo tests running in $PWD # ./bin/test 
+      run: bundle exec ./bin/test

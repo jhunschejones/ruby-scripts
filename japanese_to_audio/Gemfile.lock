@@ -17,9 +17,15 @@ GEM
     jmespath (1.4.0)
     method_source (1.0.0)
     mocha (1.13.0)
+    nokogiri (1.12.5-x86_64-darwin)
+      racc (~> 1.4)
+    power_assert (2.0.1)
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    racc (1.5.2)
+    test-unit (3.4.7)
+      power_assert
 
 PLATFORMS
   x86_64-darwin-19
@@ -28,7 +34,9 @@ PLATFORMS
 DEPENDENCIES
   aws-sdk-polly
   mocha
+  nokogiri
   pry
+  test-unit
 
 RUBY VERSION
    ruby 3.0.2p107
