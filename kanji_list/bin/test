@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 ENV["SCRIPT_ENV"] = "test"
-ENV["RACK_ENV"] = "test"
+ENV["RAKE_ENV"] = "test"
 ENV["PCLOUD_API_DATA_REGION"] = "EU"
 ENV["PCLOUD_API_ACCESS_TOKEN"] = "test-token" # Not used in tests
 
@@ -11,9 +11,12 @@ require "rake"
 require "fileutils"
 require_relative "../lib/module_loader.rb"
 
-# Make rake tasks availibile for the unit tests
+# Make custom rake tasks availibile for the unit tests
 load "lib/tasks/db.rake"
 Rake::Task.define_task(:environment)
+
+# Make sure the DB is set up
+`VERBOSE=false SCRIPT_ENV=test RAKE_ENV=test bundle exec rake db:create db:migrate`
 
 Test::Unit.at_start do
   # this setup runs once at the start

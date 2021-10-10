@@ -1,17 +1,16 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (6.1.4.1)
-      activesupport (= 6.1.4.1)
-    activerecord (6.1.4.1)
-      activemodel (= 6.1.4.1)
-      activesupport (= 6.1.4.1)
-    activesupport (6.1.4.1)
+    activemodel (7.0.0.alpha2)
+      activesupport (= 7.0.0.alpha2)
+    activerecord (7.0.0.alpha2)
+      activemodel (= 7.0.0.alpha2)
+      activesupport (= 7.0.0.alpha2)
+    activesupport (7.0.0.alpha2)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
-      zeitwerk (~> 2.3)
     aws-eventstream (1.2.0)
     aws-partitions (1.513.0)
     aws-sdk-core (3.121.1)
@@ -47,8 +46,6 @@ GEM
     minitest (5.14.4)
     mocha (1.13.0)
     multi_xml (0.6.0)
-    mustermann (1.1.1)
-      ruby2_keywords (~> 0.0.1)
     nokogiri (1.12.5)
       mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
@@ -62,23 +59,10 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     racc (1.5.2)
-    rack (2.2.3)
-    rack-protection (2.1.0)
-      rack
     rake (13.0.6)
-    ruby2_keywords (0.0.5)
-    sinatra (2.1.0)
-      mustermann (~> 1.0)
-      rack (~> 2.2)
-      rack-protection (= 2.1.0)
-      tilt (~> 2.0)
-    sinatra-activerecord (2.0.23)
-      activerecord (>= 4.1)
-      sinatra (>= 1.0)
     sqlite3 (1.4.2)
     test-unit (3.4.7)
       power_assert
-    tilt (2.0.10)
     tty-color (0.6.0)
     tty-cursor (0.7.1)
     tty-prompt (0.23.1)
@@ -92,13 +76,12 @@ GEM
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     wisper (2.0.1)
-    zeitwerk (2.4.2)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord
+  activerecord (~> 7.0.0alpha2)
   aws-sdk-s3
   aws-sdk-sns
   mocha
@@ -106,7 +89,6 @@ DEPENDENCIES
   pcloud_api
   pry
   rake
-  sinatra-activerecord
   sqlite3
   test-unit
   tty-prompt
