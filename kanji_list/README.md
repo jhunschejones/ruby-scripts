@@ -22,5 +22,5 @@ For longer term storage, the app will store and restore state in pCloud. To use 
 
 ### Test Suite:
 1. `bundle install`
-2. `RACK_ENV=test SCRIPT_ENV=test bundle exec rake db:create db:migrate`
+2. `RAKE_ENV=test SCRIPT_ENV=test bundle exec rake db:create db:migrate`
 3. `./bin/test`

@@ -18,7 +18,7 @@ jobs:
     env:
       BUNDLE_GEMFILE: ${{ github.workspace }}/kanji_list/Gemfile
       SCRIPT_ENV: test
-      RACK_ENV: test
+      RAKE_ENV: test
 
     steps:
     - uses: actions/checkout@v2
@@ -27,8 +27,6 @@ jobs:
       with:
         ruby-version: '3.0.2'
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-    - name: Setup database
-      run: bundle exec rake db:create db:migrate
     - name: Run tests
       run: bundle exec ./bin/test
 

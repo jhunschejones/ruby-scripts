@@ -3,7 +3,6 @@ source 'https://rubygems.org'
 ruby '3.0.2'
 
 gem 'activerecord'
-gem 'sinatra-activerecord' # For adding custom rake db:* commands easily
 gem 'sqlite3'
 gem 'rake'
 gem 'tty-prompt'
