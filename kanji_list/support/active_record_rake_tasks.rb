@@ -1,3 +1,5 @@
+# Heavily borrowing from https://jer-k.github.io/add-active-record-rake-tasks-to-gem
+
 # Add the ability to run db:create/migrate/drop etc
 include ActiveRecord::Tasks
 
