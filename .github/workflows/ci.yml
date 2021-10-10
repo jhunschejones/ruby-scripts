@@ -1,0 +1,61 @@
+# This workflow will download a prebuilt Ruby version, install dependencies and run tests with Rake
+
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test_kanji_list:
+    name: Kanji List Unit Tests
+    runs-on: macos-10.15
+    defaults:
+      run:
+        working-directory: kanji_list
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.0.2'
+        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+    - name: Run tests
+      run: echo tests running in $PWD # ./bin/test 
+
+  test_media_formatter:
+    name: Media Formatter Unit Tests
+    runs-on: macos-10.15
+    defaults:
+      run:
+        working-directory: media_formatter
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.0.2'
+        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+    - name: Run tests
+      run: echo tests running in $PWD # ./bin/test 
+      
+  test_japanese_to_audio:
+    name: Japanese To Audio Unit Tests
+    runs-on: macos-10.15
+    defaults:
+      run:
+        working-directory: japanese_to_audio
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.0.2'
+        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+    - name: Run tests
+      run: echo tests running in $PWD # ./bin/test 
