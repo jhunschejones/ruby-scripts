@@ -17,6 +17,8 @@ jobs:
         working-directory: kanji_list
     env:
       BUNDLE_GEMFILE: ${{ github.workspace }}/kanji_list/Gemfile
+      SCRIPT_ENV: test
+      RACK_ENV: test
 
     steps:
     - uses: actions/checkout@v2
@@ -25,6 +27,8 @@ jobs:
       with:
         ruby-version: '3.0.2'
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+    - name: Setup database
+      run: bundle exec rake db:create db:migrate
     - name: Run tests
       run: bundle exec ./bin/test
 
@@ -44,6 +48,8 @@ jobs:
       with:
         ruby-version: '3.0.2'
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+    - name: Install ImageMagick
+      run: brew install imagemagick
     - name: Run tests
       run: bundle exec ./bin/test
 
@@ -55,6 +61,9 @@ jobs:
         working-directory: japanese_to_audio
     env:
       BUNDLE_GEMFILE: ${{ github.workspace }}/japanese_to_audio/Gemfile
+      AWS_REGION: "us-east-2"
+      AWS_ACCESS_KEY_ID: "test-access-key"
+      AWS_SECRET_ACCESS_KEY: "test-secret-access-key"
 
     steps:
     - uses: actions/checkout@v2
