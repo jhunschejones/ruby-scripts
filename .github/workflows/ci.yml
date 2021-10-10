@@ -15,6 +15,10 @@ jobs:
     defaults:
       run:
         working-directory: kanji_list
+    env:
+      BUNDLE_GEMFILE: ${{ github.workspace }}/kanji_list/Gemfile
+      SCRIPT_ENV: test
+      RACK_ENV: test
 
     steps:
     - uses: actions/checkout@v2
@@ -23,8 +27,10 @@ jobs:
       with:
         ruby-version: '3.0.2'
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+    - name: Setup database
+      run: bundle exec rake db:create db:migrate
     - name: Run tests
-      run: echo tests running in $PWD # ./bin/test 
+      run: bundle exec ./bin/test
 
   test_media_formatter:
     name: Media Formatter Unit Tests
@@ -32,6 +38,8 @@ jobs:
     defaults:
       run:
         working-directory: media_formatter
+    env:
+      BUNDLE_GEMFILE: ${{ github.workspace }}/media_formatter/Gemfile
 
     steps:
     - uses: actions/checkout@v2
@@ -40,15 +48,22 @@ jobs:
       with:
         ruby-version: '3.0.2'
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+    - name: Install ImageMagick
+      run: brew install imagemagick
     - name: Run tests
-      run: echo tests running in $PWD # ./bin/test 
-      
+      run: bundle exec ./bin/test
+
   test_japanese_to_audio:
     name: Japanese To Audio Unit Tests
     runs-on: macos-10.15
     defaults:
       run:
         working-directory: japanese_to_audio
+    env:
+      BUNDLE_GEMFILE: ${{ github.workspace }}/japanese_to_audio/Gemfile
+      AWS_REGION: "us-east-2"
+      AWS_ACCESS_KEY_ID: "test-access-key"
+      AWS_SECRET_ACCESS_KEY: "test-secret-access-key"
 
     steps:
     - uses: actions/checkout@v2
@@ -58,4 +73,4 @@ jobs:
         ruby-version: '3.0.2'
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Run tests
-      run: echo tests running in $PWD # ./bin/test 
+      run: bundle exec ./bin/test

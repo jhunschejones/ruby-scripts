@@ -4,5 +4,8 @@ ruby '3.0.2'
 
 gem 'aws-sdk-polly'
 
-gem 'pry'
+gem 'test-unit'
+gem 'vcr'
+gem 'webmock'
 gem 'mocha'
+gem 'pry'

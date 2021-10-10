@@ -4,15 +4,12 @@ class SynthesizerTest < Test::Unit::TestCase
 
   def setup
     # this setup runs before each test
-    @mock_polly = mock()
-    @mock_polly.stubs(:synthesize_speech).returns(@mock_polly_response)
-    @mock_polly_response = mock()
-    @mock_polly_response.stubs(:audio_stream).returns(IO.new(1))
-    Aws::Polly::Client.stubs(:new).returns(@mock_polly)
+    VCR.insert_cassette(name)
   end
 
   def teardown
     # this teardown runs after each test
+    VCR.eject_cassette
   end
 
   def test_convert_japanese_to_audio_raises_for_invalid_japanese
