@@ -30,10 +30,10 @@ module Inbox
 
       if Audio::Processor::SUPPORTED_EXTENSIONS.include?(File.extname(filename))
         destination_filename =
-          if File.exist?("#{AUDIO_DEPOSIT_DIRECTORY}/#{File.basename(filename)}")
-            "#{AUDIO_DEPOSIT_DIRECTORY}/#{File.basename(filename)}_#{SecureRandom.uuid}#{File.extname(filename)}"
+          if File.exist?("#{AUDIO_WATCH_DIRECTORY}/#{File.basename(filename)}")
+            "#{AUDIO_WATCH_DIRECTORY}/#{File.basename(filename)}_#{SecureRandom.uuid}#{File.extname(filename)}"
           else
-            "#{AUDIO_DEPOSIT_DIRECTORY}/#{File.basename(filename)}"
+            "#{AUDIO_WATCH_DIRECTORY}/#{File.basename(filename)}"
           end
         puts "Sorting audio file from inbox: #{filename}".blue
         return FileUtils.mv(filename, destination_filename)

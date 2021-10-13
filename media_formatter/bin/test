@@ -7,7 +7,7 @@ require "mocha/test_unit"
 require "fileutils"
 require_relative "../lib/module_loader.rb"
 
-INBOX_DIRECTORY = "test/inbox"
+INBOX_DIRECTORY = "test/fixture_files/inbox"
 IMAGE_WATCH_DIRECTORY = "test/fixture_files"
 BACKUP_IMAGE_FILES_PATH = "test/fixture_files/backups"
 AUDIO_WATCH_DIRECTORY = "test/fixture_files"
