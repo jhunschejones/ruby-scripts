@@ -17,12 +17,12 @@ module Inbox
     end
 
     def process_event
-      if Image::Processor::SUPPORTED_EXTENSIONS.include?(File.extname(filename))
+      if Image::Processor::SUPPORTED_EXTENSIONS.include?(extension)
         puts "Sorting image file from inbox: #{filename}".blue
         return FileUtils.mv(filename, safe_image_filename)
       end
 
-      if Audio::Processor::SUPPORTED_EXTENSIONS.include?(File.extname(filename))
+      if Audio::Processor::SUPPORTED_EXTENSIONS.include?(extension)
         puts "Sorting audio file from inbox: #{filename}".blue
         return FileUtils.mv(filename, safe_audio_filename)
       end

@@ -30,10 +30,10 @@ class FileEvent
 
     def process(event_to_process)
       inbox_processor = Inbox::Processor.new(event_to_process.filename, event_to_process.event)
-      image_formatter = Image::Processor.new(event_to_process.filename, event_to_process.event)
+      image_processor = Image::Processor.new(event_to_process.filename, event_to_process.event)
       audio_processor = Audio::Processor.new(event_to_process.filename, event_to_process.event)
       return inbox_processor.process_event if inbox_processor.should_process_event?
-      return image_formatter.process_event if image_formatter.should_process_event?
+      return image_processor.process_event if image_processor.should_process_event?
       return audio_processor.process_event if audio_processor.should_process_event?
       puts "Skipping #{event_to_process.event} event for #{event_to_process.filename}".gray
     end
