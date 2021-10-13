@@ -21,47 +21,26 @@ Tinify.key = ENV["TINIFY_API_KEY"]
 Tinify.validate!
 log("#{Tinify.compression_count} image compressions this month")
 
-# == Set up a seperate filewatcher for the inbox
-Thread.report_on_exception = true
-Thread.new {
-  sleep 3 # wait for all watchers to start
-  # == Move any exsisting files in the inbox
-  Dir.entries(INBOX_DIRECTORY).each do |file|
-    next if file[0] == "."
-    if ImageFormatter::SUPPORTED_EXTENSIONS.include?(File.extname(file))
-      FileUtils.mv("#{INBOX_DIRECTORY}/#{file}", "#{IMAGE_WATCH_DIRECTORY}/#{File.basename(file)}")
-    end
-
-    if AudioProcessor::SUPPORTED_EXTENSIONS.include?(File.extname(file))
-      FileUtils.mv("#{INBOX_DIRECTORY}/#{file}", "#{AUDIO_DEPOSIT_DIRECTORY}/#{File.basename(file)}")
-    end
-  end
-  # == Start watching for new files
-  Filewatcher.new([INBOX_WATCH_PATH], interval: 0).watch do |watcher_event|
-    watcher_event.to_a.flat_map do |file, _event|
-      next if file.include?(".crdownload")
-      next unless File.exist?(file)
-
-      if ImageFormatter::SUPPORTED_EXTENSIONS.include?(File.extname(file))
-        FileUtils.mv(file, "#{IMAGE_WATCH_DIRECTORY}/#{File.basename(file)}")
-      end
-
-      if AudioProcessor::SUPPORTED_EXTENSIONS.include?(File.extname(file))
-        FileUtils.mv(file, "#{AUDIO_DEPOSIT_DIRECTORY}/#{File.basename(file)}")
-      end
-    end
-  end
-}
-
 # == Configure main file watcher settings ==
 filewatcher = Filewatcher.new(
-  [IMAGE_WATCH_PATH, AUDIO_WATCH_PATH],
+  [IMAGE_WATCH_PATH, AUDIO_WATCH_PATH, INBOX_WATCH_PATH],
   exclude: [BACKUP_IMAGE_FILES_PATH, BACKUP_AUDIO_FILES_PATH],
   interval: 0
 )
 
 # == Setup and start a file processing queue ==
 file_event_processor = FileEventProcessor.new.run
+
+# == Enqueue all inbox files ===
+Dir.entries(INBOX_DIRECTORY).each do |file|
+  next if file[0] == "."
+
+  file_found_event = FileEvent.new(
+    File.expand_path("#{INBOX_DIRECTORY}/#{file}"),
+    :found_in_inbox
+  )
+  file_event_processor.enqueue(file_found_event)
+end
 
 # == Run main file watcher loop ==
 filewatcher.watch do |watcher_event|

@@ -5,11 +5,11 @@ class AudioProcessor
   PEAK_LEVEL = -3.freeze
   LOUDNESS = -20.freeze
 
-  attr_reader :event, :filename
+  attr_reader :filename, :event
 
   def initialize(filename_from_event, event_name)
-    @event = event_name
     @filename = filename_from_event
+    @event = event_name
   end
 
   def process_event
