@@ -2,21 +2,23 @@ require_relative './module_loader.rb'
 
 INBOX_DIRECTORY = File.expand_path("~/Downloads/Japanese/Media\ Downloads").freeze
 INBOX_WATCH_PATH = File.expand_path("#{INBOX_DIRECTORY}/*").freeze
+
 IMAGE_WATCH_DIRECTORY = File.expand_path("~/Downloads/Japanese/Card\ Images").freeze
 IMAGE_WATCH_PATH = "#{IMAGE_WATCH_DIRECTORY}/*".freeze
 BACKUP_IMAGE_FILES_PATH = File.expand_path("~/Downloads/Japanese/Card\ Images/_Pre\ Tinyification\ Images").freeze
+
 AUDIO_WATCH_DIRECTORY = File.expand_path("~/Downloads/Japanese/Card\ Audio/To\ Process").freeze
 AUDIO_WATCH_PATH = "#{AUDIO_WATCH_DIRECTORY}/*".freeze
 AUDIO_DEPOSIT_DIRECTORY = File.expand_path("~/Downloads/Japanese/Card\ Audio/").freeze
 BACKUP_AUDIO_FILES_PATH = File.expand_path("~/Downloads/Japanese/Card\ Audio/To\ Process/_RAW").freeze
 
 # == Locate or create required state on startup ==
-puts "Image Formatter is running for '#{IMAGE_WATCH_PATH}'".cyan
+puts "Image Formatter is starting...".cyan
+FileUtils.mkdir_p(INBOX_DIRECTORY) unless Dir.exist?(INBOX_DIRECTORY)
 FileUtils.mkdir_p(BACKUP_IMAGE_FILES_PATH) unless Dir.exist?(BACKUP_IMAGE_FILES_PATH)
 FileUtils.mkdir_p(BACKUP_AUDIO_FILES_PATH) unless Dir.exist?(BACKUP_AUDIO_FILES_PATH)
-FileUtils.mkdir_p(INBOX_DIRECTORY) unless Dir.exist?(INBOX_DIRECTORY)
 
-# == Make sure Tinyfy config is working on startup ==
+# == Set up Tinyfy on startup ==
 Tinify.key = ENV["TINIFY_API_KEY"]
 Tinify.validate!
 log("#{Tinify.compression_count} image compressions this month")
@@ -31,7 +33,7 @@ filewatcher = Filewatcher.new(
 # == Setup and start a file processing queue ==
 file_event_processor = FileEvent::Processor.new.run
 
-# == Enqueue all inbox files ===
+# == Enqueue all existing inbox files ===
 Dir.entries(INBOX_DIRECTORY).each do |file|
   next if file[0] == "."
 
@@ -42,7 +44,7 @@ Dir.entries(INBOX_DIRECTORY).each do |file|
   file_event_processor.enqueue(file_found_event)
 end
 
-# == Run main file watcher loop ==
+# == Run the main file watcher loop ==
 filewatcher.watch do |watcher_event|
   file_event_processor.enqueue(
     watcher_event
