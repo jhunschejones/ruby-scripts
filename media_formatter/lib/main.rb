@@ -29,7 +29,7 @@ filewatcher = Filewatcher.new(
 )
 
 # == Setup and start a file processing queue ==
-file_event_processor = FileEventProcessor.new.run
+file_event_processor = FileEvent::Processor.new.run
 
 # == Enqueue all inbox files ===
 Dir.entries(INBOX_DIRECTORY).each do |file|

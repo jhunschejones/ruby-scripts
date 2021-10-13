@@ -1,4 +1,4 @@
-class AudioProcessorTest < Test::Unit::TestCase
+class Audio::ProcessorTest < Test::Unit::TestCase
 
   def setup
     # this setup runs before each test
@@ -13,7 +13,7 @@ class AudioProcessorTest < Test::Unit::TestCase
     safe_file_name = "test/fixture_files/18622_barg_danger_test.mp3"
     FileUtils.cp("test/fixture_files/18622.mp3", unsafe_file_name)
 
-    AudioProcessor.new(unsafe_file_name, :created).process_event
+    Audio::Processor.new(unsafe_file_name, :created).process_event
     assert File.exist?(safe_file_name)
 
     File.delete(safe_file_name) # cleanup

@@ -1,4 +1,4 @@
-class FileEventProcessorTest < Test::Unit::TestCase
+class FileEvent::ProcessorTest < Test::Unit::TestCase
 
   def setup
     # this setup runs before each test
@@ -14,8 +14,8 @@ class FileEventProcessorTest < Test::Unit::TestCase
     mock_image_formatter = mock()
     mock_image_formatter.expects(:should_process_event?).once.returns(true)
     mock_image_formatter.expects(:process_event).once
-    ImageFormatter.expects(:new).once.returns(mock_image_formatter)
-    FileEventProcessor
+    Image::Processor.expects(:new).once.returns(mock_image_formatter)
+    FileEvent::Processor
       .new(interval: 0)
       .run
       .enqueue(FileEvent.new("test/fixture_files/goat_at_rest.jpeg", :created))
@@ -27,13 +27,13 @@ class FileEventProcessorTest < Test::Unit::TestCase
     mock_image_formatter = mock()
     mock_image_formatter.expects(:should_process_event?).times(number_of_events).returns(true)
     mock_image_formatter.expects(:process_event).times(number_of_events)
-    ImageFormatter.expects(:new).times(number_of_events).returns(mock_image_formatter)
+    Image::Processor.expects(:new).times(number_of_events).returns(mock_image_formatter)
 
     file_event = FileEvent.new("test/fixture_files/goat_at_rest.jpeg", :created)
     events_to_process = []
     number_of_events.times { events_to_process << file_event }
 
-    FileEventProcessor
+    FileEvent::Processor
       .new(interval: 0)
       .run
       .enqueue(events_to_process)
