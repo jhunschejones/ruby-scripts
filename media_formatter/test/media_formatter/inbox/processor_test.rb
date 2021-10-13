@@ -17,17 +17,19 @@ class Inbox::ProcessorTest < Test::Unit::TestCase
     File.delete(@test_audio_file) if File.exist?(@test_audio_file)
   end
 
-  def test_process_event_moves_image_files_to_the_right_location
+  def test_process_event_moves_image_files_to_watch_directory
     Inbox::Processor.new(@test_image_file, :created).process_event
     assert File.exist?("test/fixture_files/goats_in_action_test.jpeg")
     # cleanup
     File.delete("test/fixture_files/goats_in_action_test.jpeg")
   end
 
-  def test_process_event_moves_audio_files_to_the_right_location
+  # Since processing audio files is currently an opt-in process rather than the
+  # default, we'll drop inbox audio file in the audio deposite directory.
+  def test_process_event_moves_audio_files_to_the_deposit_directory
     Inbox::Processor.new(@test_audio_file, :created).process_event
-    assert File.exist?("test/fixture_files/18622_test.mp3")
+    assert File.exist?("test/fixture_files/processed_audio/18622_test.mp3")
     # cleanup
-    File.delete("test/fixture_files/18622_test.mp3")
+    File.delete("test/fixture_files/processed_audio/18622_test.mp3")
   end
 end

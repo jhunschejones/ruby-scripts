@@ -4,10 +4,12 @@ module Inbox
     protected
 
     def safe_audio_filename
-      if File.exist?("#{AUDIO_WATCH_DIRECTORY}/#{basename}#{extension}")
-        "#{AUDIO_WATCH_DIRECTORY}/#{basename}_#{SecureRandom.uuid}#{extension}"
+      # Since processing audio files is currently an opt-in process rather than
+      # the default, we'll drop inbox audio file in the audio deposite directory.
+      if File.exist?("#{AUDIO_DEPOSIT_DIRECTORY}/#{basename}#{extension}")
+        "#{AUDIO_DEPOSIT_DIRECTORY}/#{basename}_#{SecureRandom.uuid}#{extension}"
       else
-        "#{AUDIO_WATCH_DIRECTORY}/#{basename}#{extension}"
+        "#{AUDIO_DEPOSIT_DIRECTORY}/#{basename}#{extension}"
       end
     end
 
