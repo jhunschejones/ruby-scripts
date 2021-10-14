@@ -63,7 +63,8 @@ class CLI
     )
     when "Open URLs"
       uri_safe_kanji = URI.encode_www_form_component(next_kanji.character)
-      system("open https://en.wiktionary.org/wiki/#{uri_safe_kanji}#Japanese")
+      # system("open https://en.wiktionary.org/wiki/#{uri_safe_kanji}#Japanese")
+      system("open https://www.japandict.com/kanji/#{uri_safe_kanji}")
       system("open https://app.kanjialive.com/#{uri_safe_kanji}")
       next_new_character_menu(open_urls: false)
     when "Add"
