@@ -27,7 +27,7 @@ module Inbox
         return FileUtils.mv(filename, safe_audio_filename)
       end
 
-      puts "WARNING: unrecognized inbox file".red
+      puts "Unrecognized inbox file #{filename}".red
     end
   end
 end
