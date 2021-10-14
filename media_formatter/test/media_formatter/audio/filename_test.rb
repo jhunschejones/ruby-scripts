@@ -1,5 +1,5 @@
 class TestAudioFile
-  include AudioFileName
+  include Audio::Filename
 
   attr_reader :filename
 
@@ -8,7 +8,7 @@ class TestAudioFile
   end
 end
 
-class AudioFileNameTest < Test::Unit::TestCase
+class Audio::FilenameTest < Test::Unit::TestCase
 
   def setup
     # this setup runs before each test
@@ -62,4 +62,3 @@ class AudioFileNameTest < Test::Unit::TestCase
     File.delete(unsafe_file_name) # cleanup
   end
 end
-
