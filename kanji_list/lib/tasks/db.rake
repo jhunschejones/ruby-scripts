@@ -31,6 +31,14 @@ namespace :db do
 
   desc "Download the database file and YAML dump from S3"
   task :download_from_s3 do
+
+    puts "WARNING: you are about to overwrite your local database with your".red
+    puts "         DB state in S3. Are you sure you want to proceed? [Y/n]".red
+    unless ["y", "yes"].include?($stdin.gets.chomp.downcase)
+      puts "Skipping remote state download"
+      exit 0
+    end
+
     db_file_name = YAML::load(File.open("config/database.yml")).fetch(ENV["SCRIPT_ENV"])["database"]
     client = Aws::S3::Client.new
 
@@ -113,8 +121,20 @@ namespace :db do
     kanji_count_message = "#{Kanji.added.count} kanjis have been added with #{Kanji.remaining_characters.size} left to add as of #{Time.now.strftime("%B %d, %Y, %I:%M%P")}"
     Aws::SNS::Resource
       .new(region: ENV["AWS_REGION"])
-      .topic("arn:aws:sns:us-east-2:050810144108:kanji-reports-topic")
+      .topic(ENV["AWS_SNS_ARN"])
       .publish({ message: kanji_count_message })
-    puts "Kanji report sent!".yellow
+    puts "Kanji report sent to SNS".yellow
+  end
+
+  desc "Count completed kanji and send to email using postfix"
+  task :report_totals_to_email do
+    Pony.mail(
+      to: ENV["EMAIL_RECIPIENT"],
+      from: "Kanji List <#{ENV["EMAIL_SENDER"]}>",
+      subject: "Kanji Report",
+      body: "#{Kanji.added.count} kanjis have been added with #{Kanji.remaining_characters.size} left to add as of #{Time.now.strftime("%B %d, %Y, %I:%M%P")}",
+      via: :sendmail,
+    )
+    puts "Kanji report email enqueued".yellow
   end
 end

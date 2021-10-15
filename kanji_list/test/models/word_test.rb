@@ -1,3 +1,5 @@
+require_relative "../test_helper"
+
 class WordTest < Test::Unit::TestCase
 
   def setup
