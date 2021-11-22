@@ -1,4 +1,4 @@
-require_relative './module_loader'
+require_relative "./module_loader"
 
 puts "=======  Welcome to Kanji List!  =======".cyan
 

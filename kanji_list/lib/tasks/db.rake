@@ -13,7 +13,7 @@ namespace :db do
 
   desc "Upload the database file and YAML dump to S3"
   task :upload_to_s3 do
-    db_file_name = YAML::load(File.open("config/database.yml")).fetch(ENV["SCRIPT_ENV"])["database"]
+    db_file_name = YAML.load(File.open("config/database.yml")).fetch(ENV["SCRIPT_ENV"])["database"]
 
     puts "Uploading ./#{db_file_name} to S3".yellow
     Aws::S3::Resource.new
@@ -31,7 +31,6 @@ namespace :db do
 
   desc "Download the database file and YAML dump from S3"
   task :download_from_s3 do
-
     puts "WARNING: you are about to overwrite your local database with your".red
     puts "         DB state in S3. Are you sure you want to proceed? [Y/n]".red
     unless ["y", "yes"].include?($stdin.gets.chomp.downcase)
@@ -39,7 +38,7 @@ namespace :db do
       exit 0
     end
 
-    db_file_name = YAML::load(File.open("config/database.yml")).fetch(ENV["SCRIPT_ENV"])["database"]
+    db_file_name = YAML.load(File.open("config/database.yml")).fetch(ENV["SCRIPT_ENV"])["database"]
     client = Aws::S3::Client.new
 
     puts "Downloading ./#{db_file_name} from S3".yellow
@@ -133,7 +132,7 @@ namespace :db do
       from: "Kanji List <#{ENV["EMAIL_SENDER"]}>",
       subject: "Kanji Report",
       body: "#{Kanji.added.count} kanjis have been added with #{Kanji.remaining_characters.size} left to add as of #{Time.now.strftime("%B %d, %Y, %I:%M%P")}",
-      via: :sendmail,
+      via: :sendmail
     )
     puts "Kanji report email enqueued".yellow
   end

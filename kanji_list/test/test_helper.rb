@@ -2,7 +2,7 @@ require "test/unit"
 require "mocha/test_unit"
 require "rake"
 require "fileutils"
-require_relative "../lib/module_loader.rb"
+require_relative "../lib/module_loader"
 
 # Make custom rake tasks availibile for the unit tests
 load "lib/tasks/db.rake"

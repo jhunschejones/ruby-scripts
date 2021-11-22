@@ -1,5 +1,4 @@
 class CLI
-
   MENU_OPTIONS = [
     SHOW_NEXT_CHARACTER_OPTION = "Next character from word list",
     ADD_TO_WORD_LIST_OPTION = "Add new words to word list",
@@ -17,7 +16,7 @@ class CLI
 
   def initialize
     @prompt = TTY::Prompt.new(
-      interrupt: Proc.new do
+      interrupt: proc do
         puts "\n#{total_kanji_added_message}"
         exit 0
       end,
@@ -126,7 +125,7 @@ class CLI
       .multiline("Add words separated by newlines or commas")
       .flat_map { |word| word.split(",").map(&:strip) }
 
-    old_words = YAML::load(File.open(WORD_LIST_YAML_PATH))[WORD_LIST_KEY]
+    old_words = YAML.load(File.open(WORD_LIST_YAML_PATH))[WORD_LIST_KEY]
 
     File.open(WORD_LIST_YAML_PATH, "w") do |file|
       file.write({ WORD_LIST_KEY => (old_words + new_words).uniq }.to_yaml)

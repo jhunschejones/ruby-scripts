@@ -14,10 +14,10 @@ Dir["#{File.dirname(__FILE__)}/**/*.rb"].each do |file|
 end
 
 WORD_LIST_KEY = "new_words".freeze
-LOCAL_DB_FILENAME = YAML::load(File.open("config/database.yml")).fetch(ENV["SCRIPT_ENV"])["database"]
+LOCAL_DB_FILENAME = YAML.load(File.open("config/database.yml")).fetch(ENV["SCRIPT_ENV"])["database"]
 KANJI_LIST_PCLOUD_FOLDER_ID = ENV["KANJI_LIST_PCLOUD_FOLDER_ID"].to_i
 KANJI_LIST_PCLOUD_ARCHIVE_FOLDER_ID = ENV["KANJI_LIST_PCLOUD_ARCHIVE_FOLDER_ID"].to_i
-PCLOUD_STATE_FILE_REGEX = /(^.+\.yml$)|(^.+\.db$)/.freeze
+PCLOUD_STATE_FILE_REGEX = /(^.+\.yml$)|(^.+\.db$)/
 
 if ENV["SCRIPT_ENV"] == "development"
   WORD_LIST_YAML_PATH = "config/word_list.yml".freeze

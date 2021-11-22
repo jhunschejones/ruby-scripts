@@ -1,18 +1,18 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
-ruby '3.0.2'
+ruby "3.0.2"
 
-gem 'activerecord', '~> 7.0.0alpha2'
-gem 'sqlite3'
-gem 'rake'
-gem 'tty-prompt'
-gem 'aws-sdk-s3'
-gem 'aws-sdk-sns'
-gem 'nokogiri' # Ruby 3.x warning, AWS gem requires xml parser not noted in their dependencies
-gem 'pony'
+gem "activerecord", "~> 7.0.0alpha2"
+gem "sqlite3"
+gem "rake"
+gem "tty-prompt"
+gem "aws-sdk-s3"
+gem "aws-sdk-sns"
+gem "nokogiri" # Ruby 3.x warning, AWS gem requires xml parser not noted in their dependencies
+gem "pony"
 
-gem 'test-unit'
-gem 'mocha'
-gem 'pry'
+gem "test-unit"
+gem "mocha"
+gem "pry"
 
-gem 'pcloud_api'
+gem "pcloud_api"

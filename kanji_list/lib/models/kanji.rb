@@ -1,7 +1,7 @@
 class Kanji < ActiveRecord::Base
   ADDED_STATUS = "added".freeze
   SKIPPED_STATUS = "skipped".freeze
-  KANJI_REGEX = /[一-龯]/.freeze
+  KANJI_REGEX = /[一-龯]/
 
   validates :character, presence: true, uniqueness: true, format: { with: KANJI_REGEX }
 
@@ -36,7 +36,7 @@ class Kanji < ActiveRecord::Base
     end
 
     def load_from_yaml_dump
-      dump = YAML::load(File.open(KANJI_YAML_DUMP_PATH))
+      dump = YAML.load(File.open(KANJI_YAML_DUMP_PATH))
       Kanji.destroy_all
       dump["added_kanji"].each do |character|
         Kanji.new(character: character&.strip).add!
@@ -49,15 +49,15 @@ class Kanji < ActiveRecord::Base
 
   def add!
     self.status = ADDED_STATUS
-    self.save!
-    $logger.debug("Added: #{self.inspect}") if $logger
+    save!
+    $logger.debug("Added: #{inspect}") if $logger
     self
   end
 
   def skip!
     self.status = SKIPPED_STATUS
-    self.save!
-    $logger.debug("Skipped: #{self.inspect}") if $logger
+    save!
+    $logger.debug("Skipped: #{inspect}") if $logger
     self
   end
 end
