@@ -28,7 +28,7 @@ class Cli
 
       # escaping spaces in the file so that the output is copy-paste-able into
       # other terminal commands
-      destination_file = synthesizer.convert_japanese_to_audio.gsub(/\s/,'\ ')
+      destination_file = synthesizer.convert_japanese_to_audio.gsub(/\s/, "\\ ")
       puts "Generated #{destination_file} 🎉".green
     end
   rescue Interrupt

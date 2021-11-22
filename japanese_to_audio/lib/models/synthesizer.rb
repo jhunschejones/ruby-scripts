@@ -7,7 +7,7 @@ class Synthesizer
   VOICE_SPEED = "slow" # x-slow, slow, medium, fast, or x-fast
   AUDIO_OUTPUT_FOLDER = ENV.fetch("AUDIO_OUTPUT_FOLDER").freeze
 
-  NON_WORD_NON_SPACE_CHARACTERS = /[^\w\s一-龯ぁ-んァ-ン０-９Ａ-ｚ]/.freeze
+  NON_WORD_NON_SPACE_CHARACTERS = /[^\w\s一-龯ぁ-んァ-ン０-９Ａ-ｚ]/
 
   def initialize(japanese:, filename: nil)
     @japanese = japanese
@@ -20,7 +20,7 @@ class Synthesizer
     source = POLLY
       .synthesize_speech({
         output_format: "mp3",
-        text: "<speak><prosody rate='#{VOICE_SPEED}'>#{@japanese.to_s}</prosody></speak>",
+        text: "<speak><prosody rate='#{VOICE_SPEED}'>#{@japanese}</prosody></speak>",
         voice_id: FEMALE_VOICE_ID,
         text_type: "ssml"
       })

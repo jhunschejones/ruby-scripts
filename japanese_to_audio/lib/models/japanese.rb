@@ -1,5 +1,5 @@
 class Japanese
-  INVALID_JAPANESE = /[^一-龯ぁ-んァ-ン０-９Ａ-ｚ。、！？]/.freeze
+  INVALID_JAPANESE = /[^一-龯ぁ-んァ-ン０-９Ａ-ｚ。、！？]/
 
   def initialize(string)
     @string = string
