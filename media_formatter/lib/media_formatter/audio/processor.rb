@@ -3,8 +3,8 @@ module Audio
     include Audio::Filename
 
     SUPPORTED_EXTENSIONS = [".mp3", ".m4a"].freeze
-    PEAK_LEVEL = -3.freeze
-    LOUDNESS = -20.freeze
+    PEAK_LEVEL = -3
+    LOUDNESS = -20
 
     attr_reader :filename, :event
 
@@ -25,9 +25,9 @@ module Audio
         # ffmpeg has trouble determining loudness for audio files > 3s in length.
         # To work around this limitation, this command pads the file out to 3s,
         # processes it, then trims it back to the original file length.
-        %x[ffmpeg -y -hide_banner -loglevel panic -i '#{filename}' -af apad,atrim=0:3,loudnorm=I=#{LOUDNESS}:TP=#{PEAK_LEVEL},atrim=0:#{input_file_duration} -ar 44.1k '#{safe_processed_file_name}']
+        `ffmpeg -y -hide_banner -loglevel panic -i '#{filename}' -af apad,atrim=0:3,loudnorm=I=#{LOUDNESS}:TP=#{PEAK_LEVEL},atrim=0:#{input_file_duration} -ar 44.1k '#{safe_processed_file_name}'`
       else
-        %x[ffmpeg -y -hide_banner -loglevel panic -i '#{filename}' -af loudnorm=I=#{LOUDNESS}:TP=#{PEAK_LEVEL} -ar 44.1k '#{safe_processed_file_name}']
+        `ffmpeg -y -hide_banner -loglevel panic -i '#{filename}' -af loudnorm=I=#{LOUDNESS}:TP=#{PEAK_LEVEL} -ar 44.1k '#{safe_processed_file_name}'`
       end
       backup_origional_file
     rescue => e
@@ -43,7 +43,7 @@ module Audio
     private
 
     def input_file_duration
-      @input_file_duration ||= %x[ffprobe -i '#{filename}' -show_entries format=duration -v quiet -of csv='p=0'].chomp
+      @input_file_duration ||= `ffprobe -i '#{filename}' -show_entries format=duration -v quiet -of csv='p=0'`.chomp
     end
 
     def audio_is_too_short?

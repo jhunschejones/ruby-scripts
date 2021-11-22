@@ -9,7 +9,6 @@ class TestInbox
 end
 
 class Inbox::FilenameTest < Test::Unit::TestCase
-
   def test_safe_audio_filename_reurns_expected_audio_filename
     expected_filename = "test/fixture_files/processed_audio/18622_test.mp3"
     assert_equal expected_filename, TestInbox.new("test/fixture_files/inbox/18622_test.mp3").send(:safe_audio_filename)

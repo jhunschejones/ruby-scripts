@@ -1,5 +1,4 @@
 class Inbox::ProcessorTest < Test::Unit::TestCase
-
   def setup
     # this setup runs before each test
     IO.any_instance.stubs(:puts)

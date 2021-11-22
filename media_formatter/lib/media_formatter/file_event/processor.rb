@@ -1,6 +1,6 @@
 class FileEvent
   class Processor
-    DEFAULT_FILE_PROCESSING_INTERVAL_SECONDS = 0.25.freeze
+    DEFAULT_FILE_PROCESSING_INTERVAL_SECONDS = 0.25
 
     def initialize(interval: DEFAULT_FILE_PROCESSING_INTERVAL_SECONDS)
       @events_to_process = Queue.new

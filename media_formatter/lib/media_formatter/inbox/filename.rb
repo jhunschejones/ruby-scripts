@@ -1,6 +1,5 @@
 module Inbox
   module Filename
-
     protected
 
     def safe_audio_filename

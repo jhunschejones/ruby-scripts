@@ -1,4 +1,4 @@
-require_relative './module_loader.rb'
+require_relative "./module_loader"
 
 INBOX_DIRECTORY = File.expand_path("~/Downloads/Japanese/Media\ Downloads").freeze
 INBOX_WATCH_PATH = File.expand_path("#{INBOX_DIRECTORY}/*").freeze

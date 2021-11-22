@@ -9,7 +9,6 @@ class TestImage
 end
 
 class Image::FilenameTest < Test::Unit::TestCase
-
   def setup
     # this setup runs before each test
     @filename = "test/fixture_files/goat_at_rest.jpeg"

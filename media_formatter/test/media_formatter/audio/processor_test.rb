@@ -1,5 +1,4 @@
 class Audio::ProcessorTest < Test::Unit::TestCase
-
   def setup
     # this setup runs before each test
   end

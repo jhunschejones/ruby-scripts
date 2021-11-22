@@ -1,6 +1,6 @@
 module Audio
   module Filename
-    SPECIAL_CHARACTERS = /[:'"\/\\.$,?!]/.freeze
+    SPECIAL_CHARACTERS = /[:'"\/\\.$,?!]/
 
     protected
 

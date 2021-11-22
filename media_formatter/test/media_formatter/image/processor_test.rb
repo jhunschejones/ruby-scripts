@@ -1,5 +1,4 @@
 class Image::ProcessorTest < Test::Unit::TestCase
-
   def setup
     # this setup runs before each test
     IO.any_instance.stubs(:puts)
@@ -31,7 +30,7 @@ class Image::ProcessorTest < Test::Unit::TestCase
   end
 
   def test_process_event_tinyfies_images_that_are_too_large
-    mock_tinify_builder = mock()
+    mock_tinify_builder = mock
     mock_tinify_builder.expects(:to_file).once
     Tinify.expects(:from_file).once.returns(mock_tinify_builder)
 
