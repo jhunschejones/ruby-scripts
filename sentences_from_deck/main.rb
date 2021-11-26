@@ -19,7 +19,7 @@ opts = {
 }
 
 # Export cards as text file to get a deck that this can parse
-CSV.foreach(RELATIVE_PATH_TO_DECK, opts) do |row|
+CSV.foreach(RELATIVE_PATH_TO_DECK, **opts) do |row|
   row.each do |col|
     # skip to the next col unless this one has an example-sentence div
     next unless col.include?("example-sentence")
