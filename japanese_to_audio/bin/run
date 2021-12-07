@@ -1,5 +1,6 @@
 #!/bin/bash
 
-. ./tmp/.env
-clear
-gtimeout --foreground 90m bundle exec ruby -r ./lib/module_loader.rb -e "Cli.new.run"
+tty sane && \
+. ./tmp/.env && \
+clear && \
+exec gtimeout --foreground 90m bundle exec ruby -r ./lib/module_loader.rb -e "Cli.new.run"
