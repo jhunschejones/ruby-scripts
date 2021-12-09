@@ -4,7 +4,7 @@ class Image
 
     TARGET_HEIGHT_PX = 480
     TARGET_FILESIZE_KB = 50
-    SUPPORTED_EXTENSIONS = [".jpeg", ".jpg", ".png"].freeze
+    SUPPORTED_EXTENSIONS = [".jpeg", ".jpg", ".png", ".webp"].freeze
 
     attr_reader :event, :image
 
