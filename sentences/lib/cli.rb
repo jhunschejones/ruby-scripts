@@ -48,6 +48,24 @@ class Cli
     print "> "
     english_sentence = user_input
 
+    sentence = Sentence.new(
+      japanese_word: japanese_word,
+      japanese_sentence: japanese_sentence,
+      english_sentence: english_sentence
+    )
+    sentence.validate
+
+    if (sentence.errors.attribute_names - [:pcloud_file_id]).any?
+      applicable_error_messages = sentence
+        .errors
+        .messages
+        .except(:pcloud_file_id)
+        .map { |k, v| "#{k.to_s.capitalize.gsub("_", " ")} #{v.join(",")}" }
+      puts applicable_error_messages.join(", ").red
+      puts ""
+      return
+    end
+
     puts "Drag and drop the audio file here:"
     print "> "
     audio_file_path = user_input.strip.gsub("\\", "")
@@ -56,16 +74,11 @@ class Cli
     new_file_path = "./tmp/#{new_filename}"
     FileUtils.cp(audio_file_path, new_file_path)
 
-    sentence = Sentence.new(
-      japanese_word: japanese_word,
-      japanese_sentence: japanese_sentence,
-      english_sentence: english_sentence,
-      pcloud_file_id: Pcloud::File.upload(
-        folder_id: PCLOUD_FOLDER_ID,
-        filename: new_filename,
-        file: File.open(new_file_path)
-      ).id
-    )
+    sentence.pcloud_file_id = Pcloud::File.upload(
+      folder_id: PCLOUD_FOLDER_ID,
+      filename: new_filename,
+      file: File.open(new_file_path)
+    ).id
 
     if sentence.save
       puts "Sentence added!\n".green
