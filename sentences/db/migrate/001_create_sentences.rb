@@ -4,7 +4,7 @@ class CreateSentences < ActiveRecord::Migration[7.0]
       t.string :japanese_word
       t.text :japanese_sentence, null: false
       t.text :english_sentence, null: false
-      t.string :pcloud_file_id, null: false
+      t.bigint :pcloud_file_id, null: false
       t.timestamps
     end
 
