@@ -17,6 +17,7 @@ ActiveRecord::Schema.define(version: 1) do
     t.text "japanese_sentence", null: false
     t.text "english_sentence", null: false
     t.bigint "pcloud_file_id", null: false
+    t.string "pcloud_download_url"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["japanese_sentence"], name: "index_sentences_on_japanese_sentence", unique: true

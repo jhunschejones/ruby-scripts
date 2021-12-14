@@ -74,11 +74,12 @@ class Cli
     new_file_path = "./tmp/#{new_filename}"
     FileUtils.cp(audio_file_path, new_file_path)
 
-    sentence.pcloud_file_id = Pcloud::File.upload(
+    pcloud_file = Pcloud::File.upload(
       folder_id: PCLOUD_FOLDER_ID,
-      filename: new_filename,
       file: File.open(new_file_path)
-    ).id
+    )
+    sentence.pcloud_file_id = pcloud_file.id
+    sentence.pcloud_download_url = pcloud_file.download_url
 
     if sentence.save
       puts "Sentence added!\n".green
@@ -99,7 +100,7 @@ class Cli
     puts "\nFound #{matching_sentences.size.to_s.cyan} #{matching_sentences.size == 1 ? "sentence" : "sentences"} matching '#{user_search}':"
     matching_sentences.each do |sentence|
       puts "#{sentence.japanese_sentence.green} (#{sentence.english_sentence})"
-      puts Pcloud::File.find(sentence.pcloud_file_id).download_url.gray
+      puts sentence.pcloud_download_url.gray
     end
     puts ""
   end
