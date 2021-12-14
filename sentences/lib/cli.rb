@@ -92,14 +92,14 @@ class Cli
   end
 
   def lookup_a_sentence
-    puts "Search by japanese word:"
+    puts "Search by Japanese word:"
     print "> "
-    matching_sentences = Sentence.where("japanese_word LIKE :search OR japanese_sentence LIKE :search", search: "%#{user_input}%")
-    puts "Found #{matching_sentences.size} matching #{matching_sentences.size == 1 ? "sentence" : "sentences"}:"
+    user_search = user_input
+    matching_sentences = Sentence.where("japanese_word LIKE :search OR japanese_sentence LIKE :search", search: "%#{user_search}%")
+    puts "\nFound #{matching_sentences.size.to_s.cyan} #{matching_sentences.size == 1 ? "sentence" : "sentences"} matching '#{user_search}':"
     matching_sentences.each do |sentence|
-      puts sentence.japanese_sentence.green
-      puts sentence.english_sentence
-      puts Pcloud::File.find(sentence.pcloud_file_id).download_url
+      puts "#{sentence.japanese_sentence.green} (#{sentence.english_sentence})"
+      puts Pcloud::File.find(sentence.pcloud_file_id).download_url.gray
     end
     puts ""
   end
