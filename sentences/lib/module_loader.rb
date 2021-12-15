@@ -1,4 +1,5 @@
 require "yaml"
+require "csv"
 require "logger"
 require "fileutils"
 require "rake"
