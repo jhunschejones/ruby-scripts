@@ -17,7 +17,7 @@ class Image
 
     def safe_resized_file_name
       return resized_file_name unless File.exist?(resized_file_name)
-      "#{IMAGE_WATCH_DIRECTORY}/#{base_filename}_#{SecureRandom.uuid}#{RESIZED_SUFFIX}#{file_extension}"
+      "#{IMAGE_WATCH_DIRECTORY}/#{base_filename}_#{UUID.generate}#{RESIZED_SUFFIX}#{file_extension}"
     end
 
     def tinyified_file_name
@@ -26,7 +26,7 @@ class Image
 
     def safe_tinyified_file_name
       return tinyified_file_name unless File.exist?(tinyified_file_name)
-      "#{IMAGE_WATCH_DIRECTORY}/#{base_filename}_#{SecureRandom.uuid}#{TINYIFIED_IMAGE_SUFFIX}#{file_extension}"
+      "#{IMAGE_WATCH_DIRECTORY}/#{base_filename}_#{UUID.generate}#{TINYIFIED_IMAGE_SUFFIX}#{file_extension}"
     end
 
     def backup_file_name
@@ -35,7 +35,7 @@ class Image
 
     def safe_backup_file_name
       return backup_file_name unless File.exist?(backup_file_name)
-      "#{BACKUP_IMAGE_FILES_PATH}/#{base_filename}_#{SecureRandom.uuid}#{file_extension}"
+      "#{BACKUP_IMAGE_FILES_PATH}/#{base_filename}_#{UUID.generate}#{file_extension}"
     end
 
     def base_filename

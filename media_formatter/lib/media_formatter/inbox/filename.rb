@@ -6,7 +6,7 @@ module Inbox
       # Since processing audio files is currently an opt-in process rather than
       # the default, we'll drop inbox audio file in the audio deposite directory.
       if File.exist?("#{AUDIO_DEPOSIT_DIRECTORY}/#{basename}#{extension}")
-        "#{AUDIO_DEPOSIT_DIRECTORY}/#{basename}_#{SecureRandom.uuid}#{extension}"
+        "#{AUDIO_DEPOSIT_DIRECTORY}/#{basename}_#{UUID.generate}#{extension}"
       else
         "#{AUDIO_DEPOSIT_DIRECTORY}/#{basename}#{extension}"
       end
@@ -14,7 +14,7 @@ module Inbox
 
     def safe_image_filename
       if File.exist?("#{IMAGE_WATCH_DIRECTORY}/#{basename}#{extension}")
-        "#{IMAGE_WATCH_DIRECTORY}/#{basename}_#{SecureRandom.uuid}#{extension}"
+        "#{IMAGE_WATCH_DIRECTORY}/#{basename}_#{UUID.generate}#{extension}"
       else
         "#{IMAGE_WATCH_DIRECTORY}/#{basename}#{extension}"
       end

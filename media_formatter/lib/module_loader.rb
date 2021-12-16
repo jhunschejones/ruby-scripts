@@ -4,7 +4,6 @@ require "fileutils"
 require "filewatcher"
 require "tinify"
 require "mini_magick"
-require "active_support/all"
 
 Dir["#{File.dirname(__FILE__)}/**/*.rb"].each do |file|
   require(file) unless File.basename(file) == "main.rb"

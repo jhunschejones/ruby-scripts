@@ -28,8 +28,7 @@ class Audio::FilenameTest < Test::Unit::TestCase
     processed_file_name = TestAudioFile.new(@filename).send(:processed_file_name)
     processed_suffix = TestAudioFile.new(@filename).send(:processed_suffix)
     FileUtils.cp(@filename, processed_file_name)
-    uuid_regex = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
-    safe_name_regex = /test\/fixture_files\/processed_audio\/18622_#{uuid_regex}#{processed_suffix}.mp3/
+    safe_name_regex = /test\/fixture_files\/processed_audio\/18622_#{UUID::REGEX}#{processed_suffix}.mp3/
 
     assert_match safe_name_regex, TestAudioFile.new(@filename).send(:safe_processed_file_name)
 
@@ -44,8 +43,7 @@ class Audio::FilenameTest < Test::Unit::TestCase
   def test_safe_backup_file_name_returns_unique_filename_when_filename_already_exists
     backup_file_name = TestAudioFile.new(@filename).send(:backup_file_name)
     FileUtils.cp(@filename, backup_file_name)
-    uuid_regex = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
-    safe_name_regex = /test\/fixture_files\/backups\/18622_#{uuid_regex}.mp3/
+    safe_name_regex = /test\/fixture_files\/backups\/18622_#{UUID::REGEX}.mp3/
 
     assert_match safe_name_regex, TestAudioFile.new(@filename).send(:safe_backup_file_name)
 

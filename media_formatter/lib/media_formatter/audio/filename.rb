@@ -10,7 +10,7 @@ module Audio
 
     def safe_processed_file_name
       return processed_file_name unless File.exist?(processed_file_name)
-      "#{AUDIO_DEPOSIT_DIRECTORY}/#{base_filename}_#{SecureRandom.uuid}#{processed_suffix}.mp3"
+      "#{AUDIO_DEPOSIT_DIRECTORY}/#{base_filename}_#{UUID.generate}#{processed_suffix}.mp3"
     end
 
     def backup_file_name
@@ -19,7 +19,7 @@ module Audio
 
     def safe_backup_file_name
       return backup_file_name unless File.exist?(backup_file_name)
-      "#{BACKUP_AUDIO_FILES_PATH}/#{base_filename}_#{SecureRandom.uuid}#{file_extension}"
+      "#{BACKUP_AUDIO_FILES_PATH}/#{base_filename}_#{UUID.generate}#{file_extension}"
     end
 
     def cli_safe_file_name
