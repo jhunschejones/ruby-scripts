@@ -11,7 +11,7 @@ on:
 jobs:
   test_kanji_list:
     name: Kanji List Unit Tests
-    runs-on: macos-10.15
+    runs-on: macos-11
     defaults:
       run:
         working-directory: kanji_list
@@ -32,7 +32,7 @@ jobs:
 
   test_media_formatter:
     name: Media Formatter Unit Tests
-    runs-on: macos-10.15
+    runs-on: macos-11
     defaults:
       run:
         working-directory: media_formatter
@@ -53,7 +53,7 @@ jobs:
 
   test_japanese_to_audio:
     name: Japanese To Audio Unit Tests
-    runs-on: macos-10.15
+    runs-on: macos-11
     defaults:
       run:
         working-directory: japanese_to_audio
