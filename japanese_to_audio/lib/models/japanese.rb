@@ -5,9 +5,9 @@ class Japanese
     @string = string
   end
 
-  def is_valid?
+  def is_valid?(allow_all_characters: false)
     return false if @string.nil? || @string.empty?
-    return false if @string.match?(INVALID_JAPANESE)
+    return false if !allow_all_characters && @string.match?(INVALID_JAPANESE)
     true
   end
 
