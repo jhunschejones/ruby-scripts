@@ -13,8 +13,13 @@ class Cli
       japanese = Japanese.new(user_input)
 
       unless japanese.is_valid?
-        puts "Sorry, I couldn't recognize '#{japanese}'".red
-        next
+        puts "Some characters don't look lile Japanese. Allow all characters? [Y/N]"
+        print "> "
+        allow_all_characters = ["y", "yes"].include?(user_input)
+        unless allow_all_characters && japanese.is_valid?(allow_all_characters: true)
+          puts "Sorry, I couldn't recognize '#{japanese}'".red
+          next
+        end
       end
 
       puts "What would you like to name the output file?"
@@ -23,7 +28,8 @@ class Cli
 
       synthesizer = Synthesizer.new(
         japanese: japanese,
-        filename: filename
+        filename: filename,
+        allow_all_characters: allow_all_characters || false
       )
 
       # escaping spaces in the file so that the output is copy-paste-able into

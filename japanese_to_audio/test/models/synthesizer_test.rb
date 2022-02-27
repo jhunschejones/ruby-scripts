@@ -48,6 +48,18 @@ class SynthesizerTest < Test::Unit::TestCase
     File.delete("./test/おはいようございます.mp3")
   end
 
+  def test_convert_japanese_to_audio_outputs_expected_mp3_file_with_mixed_characters
+    Synthesizer.new(
+      japanese: Japanese.new("Netflixのアカウント登録をしました。"),
+      filename: "I registerd for a netflix account",
+      allow_all_characters: true
+    ).convert_japanese_to_audio
+
+    assert File.exist?("./test/I registerd for a netflix account.mp3")
+
+    File.delete("./test/I registerd for a netflix account.mp3")
+  end
+
   def test_convert_japanese_to_audio_uses_timestamp_when_no_filename_is_provided
     test_time = Time.now
     test_time_ms = (test_time.to_f * 1000).to_i

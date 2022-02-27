@@ -9,9 +9,10 @@ class Synthesizer
 
   NON_WORD_NON_SPACE_CHARACTERS = /[^\w\s一-龯ぁ-んァ-ン０-９Ａ-ｚ]/
 
-  def initialize(japanese:, filename: nil)
+  def initialize(japanese:, filename: nil, allow_all_characters: false)
     @japanese = japanese
     @filename = filename
+    @allow_all_characters = allow_all_characters
   end
 
   def convert_japanese_to_audio
@@ -54,7 +55,7 @@ class Synthesizer
 
   def is_valid_japanese?
     return false unless @japanese.is_a?(Japanese)
-    return false unless @japanese.is_valid?
+    return false unless @japanese.is_valid?(allow_all_characters: @allow_all_characters)
     true
   end
 end
