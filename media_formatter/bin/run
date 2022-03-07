@@ -1,6 +1,0 @@
-#!/bin/bash
-
-bundle install --quiet && \
-. ./tmp/.env && \
-clear && \
-gtimeout --foreground 90m bundle exec ruby lib/main.rb

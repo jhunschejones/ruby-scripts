@@ -1,4 +1,0 @@
-#!/bin/bash
-
-echo "Starting console..."
-irb -r ./lib/module_loader.rb
