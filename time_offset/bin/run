@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+require "readline"
+require "time"
+
+puts "Enter column of times in MM:SS format, seperated by newlines:"
+time_array = Readline
+  .readline("> ", true)
+  .gsub(".", "")
+  .split("\n")
+  .map { |time_string| Time.strptime(time_string, "%M:%S") }
+
+puts "Enter offset in MM:SS format:"
+minutes, seconds = Readline.readline("> ", true)
+  .split(":")
+  .map(&:to_i)
+
+offset = (minutes * 60) + seconds
+
+time_array.each do |time|
+  puts (time + offset).strftime("%M:%S")
+end
