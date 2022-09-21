@@ -15,7 +15,11 @@ minutes, seconds = Readline.readline("> ", true)
   .split(":")
   .map(&:to_i)
 
-offset_seconds = (minutes * 60) + seconds
+begin
+  offset_seconds = (minutes * 60) + seconds
+rescue TypeError
+  raise "Invalid offset, use MM:SS format"
+end
 
 timestamp_array.each do |timestamp|
   puts timestamp.offset(seconds: offset_seconds).to_s
