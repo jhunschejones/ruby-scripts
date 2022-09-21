@@ -2,21 +2,21 @@
 
 require "readline"
 require "time"
+require_relative "../lib/models/timestamp"
 
-puts "Enter column of times in MM:SS format, seperated by newlines:"
-time_array = Readline
+puts "Enter column of times in MM:SS format, separated by newlines:"
+timestamp_array = Readline
   .readline("> ", true)
-  .gsub(".", "")
   .split("\n")
-  .map { |time_string| Time.strptime(time_string, "%M:%S") }
+  .map { |time_string| Timestamp.new(time_string) }
 
 puts "Enter offset in MM:SS format:"
 minutes, seconds = Readline.readline("> ", true)
   .split(":")
   .map(&:to_i)
 
-offset = (minutes * 60) + seconds
+offset_seconds = (minutes * 60) + seconds
 
-time_array.each do |time|
-  puts (time + offset).strftime("%M:%S")
+timestamp_array.each do |timestamp|
+  puts timestamp.offset(seconds: offset_seconds).to_s
 end
