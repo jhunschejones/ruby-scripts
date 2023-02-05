@@ -1,0 +1,7 @@
+#!/bin/zsh
+
+./bin/download-jpdb-reviews
+echo "" # add newline to CLI output
+./bin/download-jpdb-stats
+echo "" # add newline to CLI output
+exec ruby main.rb
