@@ -1,1 +1,2 @@
-*.json
+/tmp/*.json
+/tmp/*.txt
