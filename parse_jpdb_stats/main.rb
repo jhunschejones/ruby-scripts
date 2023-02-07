@@ -32,7 +32,13 @@ daily_study_minutes = stats_json
   .dig("response", "time_daily", "figure", "data", 0, "y")
   .reverse # show newest date first
 
-puts "Here is your jpdb.io daily study time by day:".cyan
+puts "Here are your jpdb.io daily study time stats:".cyan
+daily_study_time_entries = []
 timestamps.each_with_index do |timestamp, index|
+  daily_study_time_entries << "Date: #{timestamp}, Total minutes: #{daily_study_minutes[index]}"
   puts "#{"Date:".gray} #{timestamp}#{", Total minutes:".gray} #{daily_study_minutes[index].to_s.bold}"
+end
+
+File.open("./tmp/daily_study_time.txt", "w+") do |f|
+  f.puts(daily_study_time_entries)
 end

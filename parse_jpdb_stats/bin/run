@@ -13,7 +13,6 @@
 #   4) invalidate session token used in the script
 
 ./bin/download-jpdb-reviews
-echo "" # add newline to CLI output
 ./bin/download-jpdb-stats
 echo "" # add newline to CLI output
 ruby main.rb

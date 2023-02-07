@@ -16,11 +16,11 @@ fi
 
 rm -f ./tmp/stats.json
 
-echo "\e[37mCreating stats from ./tmp/stats.json...\e[0m"
+echo "\e[37mCreating stats from reviews file, this may take a minute...\e[0m"
 curl -sS 'https://jpdb-stats.herokuapp.com/_dash-update-component' \
   -H 'Content-Type: application/json' \
   -H 'Origin: https://jpdb-stats.herokuapp.com' \
   -H 'Referer: https://jpdb-stats.herokuapp.com/' \
   --data-raw "{\"output\":\"..new_cum.figure...new_daily.figure...rev_cum.figure...rev_daily.figure...time_cum.figure...time_daily.figure...overall.figure...datatable-struggles.data...ret_avg.figure..\",\"changedPropIds\":[\"upload-data.contents\",\"upload-data.filename\"],\"inputs\":[{\"id\":\"upload-data\",\"property\":\"contents\",\"value\":\"data:application/json;base64,$(base64 ./tmp/reviews.json)\"},{\"id\":\"upload-data\",\"property\":\"filename\",\"value\":\"reviews.json\"},{\"id\":\"timezone\",\"property\":\"data\",\"value\":\"America/Chicago\"}]}" --output ./tmp/stats.json
 
-echo "\e[37mStats created in ./tmp/stats.json 🎉\e[0m"
+echo "\e[37mStats saved in ./tmp/stats.json 🎉\e[0m"
