@@ -6,6 +6,8 @@
 # Output state: NONE, prints study minutes by date to standard out
 
 require "json"
+require "fileutils"
+require "date"
 
 # Some styled CLI output options
 class String
@@ -20,7 +22,10 @@ class String
   def bold;    "\e[1m#{self}\e[22m" end
 end
 
-stats_file_path = File.expand_path("./tmp/stats.json")
+DAILY_STUDY_TIME_RELATIVE_PATH = "./tmp/daily_study_time.txt".freeze
+STATS_RELATIVE_PATH = "./tmp/stats.json".freeze
+
+stats_file_path = File.expand_path(STATS_RELATIVE_PATH)
 raise "Missing #{stats_file_path}" unless File.exists?(stats_file_path)
 stats_file = File.read(stats_file_path)
 stats_json = JSON.parse(stats_file)
@@ -39,6 +44,13 @@ timestamps.each_with_index do |timestamp, index|
   puts "#{"Date:".gray} #{timestamp}#{", Total minutes:".gray} #{daily_study_minutes[index].to_s.bold}"
 end
 
-File.open("./tmp/daily_study_time.txt", "w+") do |f|
+File.open(DAILY_STUDY_TIME_RELATIVE_PATH, "w+") do |f|
+  f.puts("Daily jpdb.io study time generated on: #{Date.today}")
+  f.puts("=================================================")
   f.puts(daily_study_time_entries)
+end
+
+if ENV["KEEP_DAILY_STUDY_TIME"]
+  # Optionally copy the file into the project directory to be commited
+  FileUtils.cp(DAILY_STUDY_TIME_RELATIVE_PATH, "./daily_study_time.txt")
 end
