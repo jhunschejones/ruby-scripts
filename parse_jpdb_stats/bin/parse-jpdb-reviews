@@ -1,4 +1,6 @@
-# ./local_parse.rb explanation
+#!/usr/bin/env ruby
+
+# ./tmp/parse-jpdb-reviews explanation
 #
 # Required state:
 # `./tmp/reviews.json`: the exported reviews JSON from your jpdb.io account
