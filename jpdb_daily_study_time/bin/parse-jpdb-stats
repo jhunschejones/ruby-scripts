@@ -34,7 +34,7 @@ DAILY_STUDY_TIME_RELATIVE_PATH = "./tmp/daily_study_time.txt".freeze
 STATS_RELATIVE_PATH = "./tmp/stats.json".freeze
 
 stats_file_path = File.expand_path(STATS_RELATIVE_PATH)
-raise "Missing #{stats_file_path}" unless File.exists?(stats_file_path)
+raise "Missing #{stats_file_path}" unless File.exist?(stats_file_path)
 stats_json = JSON.parse(File.read(stats_file_path))
 
 timestamps = stats_json

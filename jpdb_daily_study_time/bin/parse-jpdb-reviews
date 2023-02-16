@@ -29,7 +29,7 @@ DAILY_STUDY_TIME_RELATIVE_PATH = "./tmp/daily_study_time.csv".freeze
 REVIEWS_RELATIVE_PATH = "./tmp/reviews.json".freeze
 
 reviews_file_path = File.expand_path(REVIEWS_RELATIVE_PATH)
-raise "Missing #{reviews_file_path}".red unless File.exists?(reviews_file_path)
+raise "Missing #{reviews_file_path}".red unless File.exist?(reviews_file_path)
 reviews_json = JSON.parse(File.read(reviews_file_path))
 
 review_categories = reviews_json.keys
