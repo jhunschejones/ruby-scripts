@@ -1,4 +1,4 @@
-# Parse JPDB Stats
+# JPDB Daily Study Time
 
 ### Overview
 This project holds a small set of scripts that help connect existing tools in order to provide my daily study minutes on jpdb.io.
