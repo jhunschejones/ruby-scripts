@@ -28,6 +28,12 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: '3.2.0'
+    - name: Set timezone
+      uses: szenius/set-timezone@v1.0
+      with:
+        timezoneLinux: "America/Chicago"
+        timezoneMacos: "America/Chicago"
+        timezoneWindows: "America/Chicago"
     - name: Generate new daily_study_time.csv
       run: ./bin/run
     - name: Commit updated daily_study_time.csv file
