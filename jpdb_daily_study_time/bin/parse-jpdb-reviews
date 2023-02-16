@@ -6,7 +6,7 @@
 # `./tmp/reviews.json`: the exported reviews JSON from your jpdb.io account
 #
 # Output state:
-# `./tmp/daily_study_time.txt`: daily review minutes (also printed to standard out)
+# `./tmp/daily_study_time.csv`: daily review minutes (also printed to standard out)
 
 require "json"
 require "date"
@@ -24,7 +24,7 @@ class String
   def bold;    "\e[1m#{self}\e[22m" end
 end
 
-DAILY_STUDY_TIME_RELATIVE_PATH = "./tmp/daily_study_time.txt".freeze
+DAILY_STUDY_TIME_RELATIVE_PATH = "./tmp/daily_study_time.csv".freeze
 REVIEWS_RELATIVE_PATH = "./tmp/reviews.json".freeze
 
 reviews_file_path = File.expand_path(REVIEWS_RELATIVE_PATH)
@@ -47,22 +47,20 @@ unique_review_timestamps.each do |timestamp|
 end
 
 review_dates = review_timestamps_by_date.keys.sort.reverse
-daily_study_time_entries = []
+daily_study_time_entries = ["Date,Time (mins)"] # CSV headers
 
 puts "Here are your jpdb.io daily study time stats:".cyan
 review_dates.each do |review_date|
   study_minutes = review_timestamps_by_date[review_date].uniq.size
-  daily_study_time_entries << "Date: #{review_date}, Total minutes: #{study_minutes}"
+  # build up the rows for daily_study_time.csv
+  daily_study_time_entries << "#{Date.parse(review_date).strftime("%-m/%-d/%Y")},#{study_minutes}"
+  # print out totals to the console
   puts "#{"Date:".gray} #{review_date}#{", Total minutes:".gray} #{study_minutes.to_s.bold}"
 end
 
-File.open(DAILY_STUDY_TIME_RELATIVE_PATH, "w+") do |f|
-  f.puts("Daily jpdb.io study time generated on: #{Date.today}")
-  f.puts("=================================================")
-  f.puts(daily_study_time_entries)
-end
+File.open(DAILY_STUDY_TIME_RELATIVE_PATH, "w+") { |f| f.puts(daily_study_time_entries) }
 
 if ENV["KEEP_DAILY_STUDY_TIME"]
   # Optionally copy the file into the project directory to be commited
-  FileUtils.cp(DAILY_STUDY_TIME_RELATIVE_PATH, "./daily_study_time.txt")
+  FileUtils.cp(DAILY_STUDY_TIME_RELATIVE_PATH, "./daily_study_time.csv")
 end
