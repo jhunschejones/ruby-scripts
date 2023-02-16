@@ -15,6 +15,9 @@ on:
 jobs:
   run:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: jpdb_daily_study_time
     env:
       KEEP_DAILY_STUDY_TIME: 'true'
       JPDB_USERNAME: ${{ secrets.JPDB_USERNAME }}
