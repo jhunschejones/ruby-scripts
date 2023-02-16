@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 # ./bin/jpdb-logout explanation
 #
@@ -11,7 +11,7 @@
 # floating around in the world.)
 
 if [ ! -f ./tmp/jpdb-cookie-jar.txt ]; then
-  echo "\e[31mMissing required ./tmp/jpdb-cookie-jar.txt file ⚠️\e[0m"
+  echo $'\e[31mMissing required ./tmp/jpdb-cookie-jar.txt file ⚠️\e[0m'
   exit 0
 fi
 
