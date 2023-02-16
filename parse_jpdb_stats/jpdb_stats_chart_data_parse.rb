@@ -27,8 +27,8 @@ STATS_RELATIVE_PATH = "./tmp/stats.json".freeze
 
 stats_file_path = File.expand_path(STATS_RELATIVE_PATH)
 raise "Missing #{stats_file_path}" unless File.exists?(stats_file_path)
-stats_file = File.read(stats_file_path)
-stats_json = JSON.parse(stats_file)
+stats_json = JSON.parse(File.read(stats_file_path))
+
 timestamps = stats_json
   .dig("response", "time_daily", "figure", "data", 0, "x")
   .map { |timestamp| timestamp.split("T")[0] } # just show date
