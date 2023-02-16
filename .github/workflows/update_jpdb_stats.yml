@@ -25,6 +25,7 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: '3.2.0'
+        bundler: 'none'
     - name: Generate new daily_study_time.csv
       run: bundle exec rake
     - name: Commit updated daily_study_time.csv file
