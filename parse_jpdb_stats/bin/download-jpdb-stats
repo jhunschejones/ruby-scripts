@@ -16,7 +16,7 @@ fi
 
 rm -f ./tmp/stats.json
 
-echo "\e[37mCreating stats from reviews file, this may take a minute...\e[0m"
+echo "\e[37mCreating stats from reviews.json file, this may take a minute...\e[0m"
 curl -sS 'https://jpdb-stats.herokuapp.com/_dash-update-component' \
   -H 'Content-Type: application/json' \
   -H 'Origin: https://jpdb-stats.herokuapp.com' \
