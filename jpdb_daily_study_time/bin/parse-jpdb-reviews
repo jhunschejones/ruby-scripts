@@ -9,6 +9,7 @@
 # `./tmp/daily_study_time.csv`: daily review minutes (also printed to standard out)
 
 require "json"
+require "fileutils"
 require "date"
 
 # Some styled CLI output options
