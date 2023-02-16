@@ -16,21 +16,21 @@ jobs:
   run:
 
     runs-on: ubuntu-latest
-		env:
-			KEEP_DAILY_STUDY_TIME: 'true'
-			JPDB_USERNAME: ${{ secrets.JPDB_USERNAME }}
-			JPDB_PASSWORD: ${{ secrets.JPDB_PASSWORD }}
+    env:
+      KEEP_DAILY_STUDY_TIME: 'true'
+      JPDB_USERNAME: ${{ secrets.JPDB_USERNAME }}
+      JPDB_PASSWORD: ${{ secrets.JPDB_PASSWORD }}
 
     steps:
     - uses: actions/checkout@v3
     - name: Set up Ruby
-			uses: ruby/setup-ruby@v1
+	  uses: ruby/setup-ruby@v1
       with:
         ruby-version: '3.2.0'
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Generate new daily_study_time.csv
       run: bundle exec rake
-		- name: Commit updated daily_study_time.csv file
+    - name: Commit updated daily_study_time.csv file
       run: |
         git config user.name github-actions
         git config user.email github-actions@github.com
