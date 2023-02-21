@@ -12,6 +12,8 @@ require "json"
 require "fileutils"
 require "date"
 require_relative "../lib/string_utils"
+require_relative "../lib/timezone"
+
 
 DAILY_STUDY_TIME_RELATIVE_PATH = "./tmp/daily_study_time.csv".freeze
 REVIEWS_RELATIVE_PATH = "./tmp/reviews.json".freeze
@@ -30,7 +32,9 @@ end.uniq
 review_timestamps_by_date = Hash.new {|h, k| h[k] = [] }
 unique_review_timestamps.each do |timestamp|
   # round timestamps to the nearest minute
-  rounded_time = Time.at(timestamp - (timestamp % 60))
+  rounded_time = Timezone
+    .for_seconds_timestamp(timestamp)
+    .to_local(Time.at(timestamp - (timestamp % 60)))
   date = rounded_time.to_s.split.first
   review_timestamps_by_date[date] << rounded_time.to_i
 end
