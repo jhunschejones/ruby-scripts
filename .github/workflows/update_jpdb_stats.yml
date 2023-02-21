@@ -21,6 +21,7 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         working-directory: jpdb_daily_study_time
+        bundler-cache: true
     - name: Set timezone
       uses: szenius/set-timezone@v1.0
       with:
