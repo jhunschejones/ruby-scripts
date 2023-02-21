@@ -11,19 +11,9 @@
 require "json"
 require "fileutils"
 require "date"
+require_relative "../lib/string_utils"
+require_relative "../lib/timezone"
 
-# Some styled CLI output options
-class String
-  def red;     "\e[31m#{self}\e[0m" end
-  def green;   "\e[32m#{self}\e[0m" end
-  def black;   "\e[30m#{self}\e[0m" end
-  def magenta; "\e[35m#{self}\e[0m" end
-  def brown;   "\e[33m#{self}\e[0m" end
-  def blue;    "\e[34m#{self}\e[0m" end
-  def cyan;    "\e[36m#{self}\e[0m" end
-  def gray;    "\e[37m#{self}\e[0m" end
-  def bold;    "\e[1m#{self}\e[22m" end
-end
 
 DAILY_STUDY_TIME_RELATIVE_PATH = "./tmp/daily_study_time.csv".freeze
 REVIEWS_RELATIVE_PATH = "./tmp/reviews.json".freeze
@@ -42,7 +32,9 @@ end.uniq
 review_timestamps_by_date = Hash.new {|h, k| h[k] = [] }
 unique_review_timestamps.each do |timestamp|
   # round timestamps to the nearest minute
-  rounded_time = Time.at(timestamp - (timestamp % 60))
+  rounded_time = Timezone
+    .for_seconds_timestamp(timestamp)
+    .to_local(Time.at(timestamp - (timestamp % 60)))
   date = rounded_time.to_s.split.first
   review_timestamps_by_date[date] << rounded_time.to_i
 end
