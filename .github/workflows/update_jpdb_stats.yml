@@ -13,6 +13,7 @@ jobs:
         working-directory: jpdb_daily_study_time
     env:
       KEEP_DAILY_STUDY_TIME: 'true'
+      TIMEZONE_DEBUG: 'true'
       JPDB_USERNAME: ${{ secrets.JPDB_USERNAME }}
       JPDB_PASSWORD: ${{ secrets.JPDB_PASSWORD }}
     steps:
