@@ -13,5 +13,5 @@
 
 ./bin/download-jpdb-reviews
 echo '' # add newline to CLI output
-./bin/parse-jpdb-reviews
+bundle exec ./bin/parse-jpdb-reviews
 ./bin/jpdb-logout
