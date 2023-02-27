@@ -50,15 +50,18 @@ end
 
 review_dates = review_timestamps_by_date.keys.sort.reverse
 daily_study_time_entries = ["Date,Time (mins)"] # CSV headers
+daily_study_time_log_lines = []
 
-puts "Here are your jpdb.io daily study time stats:".cyan
 review_dates.each do |review_date|
   study_minutes = review_timestamps_by_date[review_date].uniq.size
   # build up the rows for daily_study_time.csv
   daily_study_time_entries << "#{Date.parse(review_date).strftime("%-m/%-d/%Y")},#{study_minutes}"
   # print out totals to the console
-  puts "#{"Date:".gray} #{review_date}#{", Total minutes:".gray} #{study_minutes.to_s.bold}"
+  daily_study_time_log_lines << "#{"Date:".gray} #{review_date}#{", Total minutes:".gray} #{study_minutes.to_s.bold}"
 end
+
+puts "Your jpdb.io daily study time stats for the last 14 days:".cyan
+daily_study_time_log_lines[0..13].each { |log_line| puts(log_line) }
 
 if ENV["TIMEZONE_DEBUG"]
   puts "\nTimezone debug info:".brown
