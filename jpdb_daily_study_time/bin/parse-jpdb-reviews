@@ -63,7 +63,7 @@ if ENV["TIMEZONE_DEBUG"]
   puts "\nTimezone debug info:".brown
   dates_by_timezone.map do |(timezone, dates)|
     sorted_dates = dates.uniq.sort
-    puts "#{timezone}: #{sorted_dates[0]} - #{sorted_dates[-1]}"
+    puts "#{timezone}: #{sorted_dates}"
   end
 end
 
