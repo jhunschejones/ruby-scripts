@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+`op signin`
+
+require "pcloud_api"
+
+Pcloud::Client.configure(
+  access_token: `op item get "pcloud_folder_sync access token" --fields password`,
+  data_region: "EU"
+)
+
+folder = Pcloud::Folder.find_by(path: "/01 Docs/02 Scans/2022_The Big Scan")
+puts "Found #{folder.contents.size} items in your folder"
