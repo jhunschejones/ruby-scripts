@@ -1,13 +1,26 @@
-#!/usr/bin/env ruby
+#!/bin/zsh
 
-`op signin`
+# load in environment variables in ./tmp/.env if it exists
+[ -f ./tmp/.env ] && . ./tmp/.env
 
-require "pcloud_api"
+# if PCLOUD_FOLDER_PATH isn't set, bail early
+if [[ ! -n "${PCLOUD_FOLDER_PATH}" ]]; then
+    echo "\033[0;31mExiting early: PCLOUD_FOLDER_PATH was not set\033[0m"
+  exit 0
+fi
 
-Pcloud::Client.configure(
-  access_token: `op item get "pcloud_folder_sync access token" --fields password`,
-  data_region: "EU"
-)
+# if PCLOUD_ACCESS_TOKEN isn't set yet, try to set it using 1Password CLI
+if [[ ! -n "${PCLOUD_ACCESS_TOKEN}" ]]; then
+  op signin
+  PCLOUD_ACCESS_TOKEN=$(op item get "pcloud_folder_sync access token" --fields password)
+fi
 
-folder = Pcloud::Folder.find_by(path: "/01 Docs/02 Scans/2022_The Big Scan")
-puts "Found #{folder.contents.size} items in your folder"
+# if PCLOUD_ACCESS_TOKEN still isn't set, bail before running the rest of the script
+if [[ ! -n "${PCLOUD_ACCESS_TOKEN}" ]]; then
+  echo "\033[0;31mExiting early: PCLOUD_ACCESS_TOKEN was not set\033[0m"
+  exit 0
+fi
+
+PCLOUD_ACCESS_TOKEN=$PCLOUD_ACCESS_TOKEN \
+PCLOUD_FOLDER_PATH=$PCLOUD_FOLDER_PATH \
+bundle exec ruby ./lib/main.rb
