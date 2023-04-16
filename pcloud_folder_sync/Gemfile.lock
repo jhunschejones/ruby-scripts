@@ -1,15 +1,20 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    coderay (1.1.3)
     concurrent-ruby (1.2.2)
     httparty (0.21.0)
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
+    method_source (1.0.0)
     mini_mime (1.1.2)
     multi_xml (0.6.0)
     pcloud_api (0.2.3)
       httparty (~> 0.16)
       tzinfo
+    pry (0.14.2)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
 
@@ -19,6 +24,7 @@ PLATFORMS
 DEPENDENCIES
   httparty
   pcloud_api
+  pry
 
 BUNDLED WITH
    2.3.26

@@ -2,3 +2,4 @@ source "https://rubygems.org"
 
 gem "pcloud_api"
 gem "httparty"
+gem "pry"
