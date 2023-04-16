@@ -13,4 +13,7 @@ unless target_pcloud_folder
   raise "Could not find #{Downloader::PCLOUD_FOLDER_PATH} in pCloud".red
 end
 
-Downloader.download_folder(target_pcloud_folder)
+puts "============"
+puts "💾 Downloading contents of '#{Downloader::PCLOUD_FOLDER_PATH}' to '#{Downloader::LOCAL_FOLDER_PATH}'".bold.cyan
+puts "============"
+# Downloader.download_folder(target_pcloud_folder)
