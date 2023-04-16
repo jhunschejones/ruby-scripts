@@ -9,6 +9,12 @@ if [[ ! -n "${PCLOUD_FOLDER_PATH}" ]]; then
   exit 0
 fi
 
+# if LOCAL_FOLDER_PATH isn't set, bail early
+if [[ ! -n "${LOCAL_FOLDER_PATH}" ]]; then
+    echo "\033[0;31mExiting early: LOCAL_FOLDER_PATH was not set\033[0m"
+  exit 0
+fi
+
 # if PCLOUD_ACCESS_TOKEN isn't set yet, try to set it using 1Password CLI
 if [[ ! -n "${PCLOUD_ACCESS_TOKEN}" ]]; then
   op signin

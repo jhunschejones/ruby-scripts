@@ -17,6 +17,7 @@ PLATFORMS
   x86_64-darwin-21
 
 DEPENDENCIES
+  httparty
   pcloud_api
 
 BUNDLED WITH
