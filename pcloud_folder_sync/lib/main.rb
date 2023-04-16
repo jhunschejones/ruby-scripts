@@ -17,4 +17,4 @@ puts "============"
 puts "💾 Downloading contents of '#{Downloader::PCLOUD_FOLDER_PATH}' to '#{Downloader::LOCAL_FOLDER_PATH}'".bold.cyan
 puts "============"
 
-Downloader.download_folder(target_pcloud_folder)
+Downloader.download_folder(pcloud_folder: target_pcloud_folder)
