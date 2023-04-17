@@ -1,7 +1,12 @@
 #!/bin/zsh
 
-# load in environment variables in ./tmp/.env if it exists
-[ -f ./tmp/.env ] && . ./tmp/.env
+# allow users to pass in a custom .env file, i.e. `./bin/run ./tmp/.env2`
+CUSTOM_ENV_FILE_PATH=$1
+DEFAULT_ENV_FILE_PATH=./tmp/.env
+ENV_FILE_PATH="${CUSTOM_ENV_FILE_PATH:-$DEFAULT_ENV_FILE_PATH}"
+
+# load in environment variables in env file if it exists
+[ -f $ENV_FILE_PATH ] && . $ENV_FILE_PATH
 
 # if PCLOUD_FOLDER_PATH isn't set, bail early
 if [[ ! -n "${PCLOUD_FOLDER_PATH}" ]]; then
