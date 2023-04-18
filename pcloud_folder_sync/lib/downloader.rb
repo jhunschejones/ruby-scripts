@@ -6,7 +6,13 @@ class Downloader
   LOCAL_FOLDER_PATH = ENV["LOCAL_FOLDER_PATH"]
   PCLOUD_FOLDER_PATH = ENV["PCLOUD_FOLDER_PATH"]
 
-  def self.download_file(pcloud_file:, path: PCLOUD_FOLDER_PATH)
+  attr_reader :files_processed_count
+
+  def initialize
+    @files_processed_count = 0
+  end
+
+  def download_file(pcloud_file:, path: PCLOUD_FOLDER_PATH)
     raise "`path` cannot be nil".red if path.nil?
 
     # Make a local directory if one doesn't exist yet
@@ -16,6 +22,9 @@ class Downloader
       FileUtils.mkdir_p(subdirectory_path)
     end
     local_filepath = "#{subdirectory_path}/#{pcloud_file.name}".gsub("//", "/")
+
+    # Keep track of how many files have been processed
+    @files_processed_count = files_processed_count + 1
 
     # Local file already exists and is newer than the version in pCloud
     if ::File.exist?(local_filepath) && ::File.ctime(local_filepath) > pcloud_file.created_at
@@ -32,15 +41,15 @@ class Downloader
     end
   end
 
-  def self.download_folder(pcloud_folder:, previous_path: PCLOUD_FOLDER_PATH)
+  def download_folder(pcloud_folder:, previous_path: PCLOUD_FOLDER_PATH)
     # For sub-subdirectories `path` is `nil`. Passing `previous_path` along helps us build a directory
     # structure locally that more acurately matches what's in pCloud.
     path = pcloud_folder.path || "#{previous_path}/#{pcloud_folder.name}"
     pcloud_folder
       .contents
       .each do |item|
-        next self.download_file(pcloud_file: item, path: path) if item.is_a?(Pcloud::File)
-        next self.download_folder(pcloud_folder: item, previous_path: path) if item.is_a?(Pcloud::Folder)
+        next download_file(pcloud_file: item, path: path) if item.is_a?(Pcloud::File)
+        next download_folder(pcloud_folder: item, previous_path: path) if item.is_a?(Pcloud::Folder)
         puts "Unrecognized pCloud item #{item}".red
       end
   end
