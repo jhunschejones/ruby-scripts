@@ -1,5 +1,5 @@
 source "https://rubygems.org"
 
-gem "pcloud_api"
+gem "pcloud_api", ">= 0.2.5"
 gem "httparty"
 gem "pry"

@@ -9,7 +9,7 @@ GEM
     method_source (1.0.0)
     mini_mime (1.1.2)
     multi_xml (0.6.0)
-    pcloud_api (0.2.3)
+    pcloud_api (0.2.5)
       httparty (~> 0.16)
       tzinfo
     pry (0.14.2)
@@ -23,7 +23,7 @@ PLATFORMS
 
 DEPENDENCIES
   httparty
-  pcloud_api
+  pcloud_api (>= 0.2.5)
   pry
 
 BUNDLED WITH
