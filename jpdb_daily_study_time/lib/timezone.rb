@@ -19,6 +19,13 @@ module Timezone
       [[], []]
     end
 
+  def self.validate_timezone_changes_config
+    # loading this module will parse the config file and raise parsing errors automatically,
+    # so if we made it this far the config is probably not entirely broken 👍🏻
+    raise "More than 1 currently active timezones" unless UNCOMPLETED_TIMEZONE_CHANGES.size < 2
+    puts "Using the default timezone of #{DEFAULT_TIMEZONE} 🕓" if (COMPLETED_TIMEZONE_CHANGES + UNCOMPLETED_TIMEZONE_CHANGES).none?
+  end
+
   # `timestamp` is a 10-digit integer for seconds since unix epoch
   def self.for_seconds_timestamp(timestamp)
     time_from_timestamp = Time.at(timestamp)
