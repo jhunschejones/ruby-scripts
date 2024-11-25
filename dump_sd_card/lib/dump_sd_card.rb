@@ -8,7 +8,9 @@ Dir.chdir("/Volumes/Untitled")
 if Dir.entries(".").include?("PRIVATE")
   files_by_date = Hash.new { |h, key| h[key] = [] }
 
+  # navigate into the folder where all the video files are
   Dir.chdir("./PRIVATE/M4ROOT/CLIP")
+
   Dir.entries(".").each do |video_file|
     next if video_file[0] == "." # skip dot files
 
@@ -28,19 +30,26 @@ if Dir.entries(".").include?("PRIVATE")
   end
 end
 
-# change into the SD card
+# change back into the main SD card directory
 Dir.chdir("/Volumes/Untitled")
 
 # logic for photos
 if Dir.entries(".").include?("DCIM")
+  # change into the main photos directory
   Dir.chdir("./DCIM")
 
+  folders_count = 0 # right now we don't handle the scenario where there are
+                    # multiple folders at this level, so this is a failsafe
   Dir.entries(".").each do |photos_folder|
     next if photos_folder[0] == "." # skip dot files
+
+    folders_count +=1
+    raise "More photos folders than expected" if folders_count > 1 # fail out if we have multiple base-level photos folders
+
+    # navigate into the photos folder with an funny number in the name
     Dir.chdir(photos_folder)
 
     files_by_date = Hash.new { |h, key| h[key] = [] }
-
     Dir.entries(".").each do |photo_file|
       next if photo_file[0] == "." # skip dot files
 
