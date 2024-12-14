@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+puts "Drag and drop parent folder here"
+print "> "
+parent_folder = $stdin.gets.chomp
+
+Dir.chdir(parent_folder.gsub("\\ ", " ").strip)
+
+Dir.entries(".").each do |file|
+  next if file[0] == "." # skip dot files
+
+  # match files named like 12.10.2024
+  match_data = file.match(/(?<month>\d{2})\.(?<day>\d{2})\.(?<year>\d{4})/)
+  if match_data
+    # rename to the file format "2024-12-10"
+    new_name = "#{match_data[:year]}-#{match_data[:month]}-#{match_data[:day]}"
+    File.rename(file, new_name)
+  end
+end
