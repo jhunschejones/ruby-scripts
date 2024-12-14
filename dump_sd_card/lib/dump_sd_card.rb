@@ -1,5 +1,21 @@
 require "fileutils"
+require "shellwords"
 require_relative "string_utils"
+
+def copy_file_timestamps(from_path:, to_path:)
+  # Get the original file's timestamps
+  original_stat = File.stat(from_path)
+  created_time = original_stat.birthtime rescue nil
+  modified_time = original_stat.mtime
+
+  # Update the copied file's timestamps
+  File.utime(modified_time, modified_time, to_path)
+
+  # Preserve creation time if supported
+  if created_time
+    system("SetFile -d '#{created_time.strftime("%m/%d/%Y %H:%M:%S")}' #{Shellwords.escape(to_path)}")
+  end
+end
 
 # change into the SD card
 Dir.chdir("/Volumes/Untitled")
@@ -25,6 +41,7 @@ if Dir.entries(".").include?("PRIVATE")
     files_by_date[created_at].each do |file|
       print "#{file},".gray
       FileUtils.cp(file, "#{folder_for_date}/#{file}")
+      copy_file_timestamps(from_path: file, to_path: "#{folder_for_date}/#{file}")
     end
     puts ""
   end
@@ -44,7 +61,7 @@ if Dir.entries(".").include?("DCIM")
     next if photos_folder[0] == "." # skip dot files
 
     folders_count +=1
-    raise "More photos folders than expected" if folders_count > 1 # fail out if we have multiple base-level photos folders
+    raise "More photos folders than expected" if folders_count > 1 # bail out if we have multiple base-level photos folders
 
     # navigate into the photos folder with an funny number in the name
     Dir.chdir(photos_folder)
@@ -64,6 +81,7 @@ if Dir.entries(".").include?("DCIM")
       files_by_date[created_at].each do |file|
         print "#{file},".gray
         FileUtils.cp(file, "#{folder_for_date}/#{file}")
+        copy_file_timestamps(from_path: file, to_path: "#{folder_for_date}/#{file}")
       end
       puts ""
     end
