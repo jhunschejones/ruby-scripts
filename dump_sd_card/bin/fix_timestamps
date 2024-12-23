@@ -1,0 +1,72 @@
+#!/usr/bin/env ruby
+
+require "shellwords"
+
+# README:
+#
+# This script takes an input of a folder of video files dumped from a Sony
+# formatted SD card, and a second folder of processed video files that have
+# the same name. It then copies the timestamps from the Sony card files over
+# to the processed files with matching file names.
+
+def get_file_timestamps(file)
+  # Get the original file's timestamps
+  original_stat = File.stat(file)
+  created_time = original_stat.birthtime rescue nil
+  modified_time = original_stat.mtime
+
+  { created_time: created_time, modified_time: modified_time }
+end
+
+
+def set_file_timestamps(created_time:, modified_time:, file_path:)
+  # Update the copied file's timestamps
+  File.utime(modified_time, modified_time, file_path)
+
+  # Preserve creation time if supported
+  if created_time
+    system("SetFile -d '#{created_time.strftime("%m/%d/%Y %H:%M:%S")}' #{Shellwords.escape(file_path)}")
+  end
+end
+
+# this is the format of the file extensions on the sony sd card
+def filename_with_capitalized_extension(file)
+  file.gsub(File.extname(file), File.extname(file).upcase)
+end
+
+
+
+
+puts "Drag the folder with timestamps you want to use here"
+print "> "
+timestamps_folder = $stdin.gets.chomp
+
+puts "Drag the folder with timestamps you want to fix here"
+print "> "
+fix_it_folder = $stdin.gets.chomp
+
+# Go get the timestamps for the files in the timestamps_folder
+timestamps = {}
+Dir.chdir(timestamps_folder.gsub("\\ ", " ").strip)
+
+Dir.entries(".").each do |file|
+  next if file[0] == "." # skip dot files
+  timestamps[file] = get_file_timestamps(file)
+end
+
+# Go to the fix_it_folder and update the timestamps for matching filenames
+Dir.chdir(fix_it_folder.gsub("\\ ", " ").strip)
+Dir.entries(".").each do |file|
+  next if file[0] == "." # skip dot files
+
+  # we need to search by the filename with a capitalized extension because this is what the files look like
+  # when dumped raw off the Sony card, while the Catalyst files have normal, downcased extensions
+  found_file_timestamps = timestamps[filename_with_capitalized_extension(file)]
+  if found_file_timestamps
+    set_file_timestamps(
+      created_time: found_file_timestamps[:created_time],
+      modified_time: found_file_timestamps[:modified_time],
+      file_path: file
+    )
+  end
+end

@@ -1,5 +1,10 @@
 #!/usr/bin/env ruby
 
+# README:
+#
+# This script takes an input of a folder with sub-folders named like 12.10.2024
+# it then renames those folders using the same date but in the 2024-12-10 format
+
 puts "Drag and drop parent folder here"
 print "> "
 parent_folder = $stdin.gets.chomp
